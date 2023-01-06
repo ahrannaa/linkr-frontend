@@ -1,30 +1,50 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { DebounceInput } from "react-debounce-input";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SearchIcon from "../assets/img/Vector.svg";
 
 export default function Search() {
+  const [result, setResult] = useState([]);
+  const [name, setName] = useState();
+  const navegate = useNavigate()
+
+  useEffect(() => {
+    if (name?.length > 2) {
+      axios
+        .get(`http://localhost:4000/search/${name}`)
+        .then((res) => {
+          setResult(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    }else{
+      setResult([]);
+    }
+  }, [name]);
+
   return (
-    
-      <StyleSearch>
-        <input type="text" placeholder="Search for people" />
-        <button>
-          <img src={SearchIcon} alt="search-icon" />
-        </button>
-        {/* <ResultStyle>
-          <img
-            src="https://st2.depositphotos.com/3765293/6822/i/450/depositphotos_68226509-stock-photo-black-cat-in-the-grass.jpg"
-            alt="avatar user"
-          />
-          <span>João Avatares</span>
+    <StyleSearch>
+      <DebounceInput
+        type="text"
+        name="userName"
+        minLength={0}
+        debounceTimeout={300}
+        onChange={(event) => setName(event.target.value)}
+        placeholder="Search for people"
+      />
+      <button>
+        <img src={SearchIcon} alt="search-icon" />
+      </button>
+      {result?.map((user) => (
+        <ResultStyle key={user.id} onClick={() => navegate(`user/:${user.id}`)}>
+          <img src={user.picture} alt="avatar user" />
+          <span>{user.userName}</span>
         </ResultStyle>
-        <ResultStyle>
-          <img
-            src="https://st2.depositphotos.com/3765293/6822/i/450/depositphotos_68226509-stock-photo-black-cat-in-the-grass.jpg"
-            alt="avatar user"
-          />
-          <span>João Avatares</span>
-        </ResultStyle> */}
-      </StyleSearch>
-    
+      ))}
+    </StyleSearch>
   );
 }
 
@@ -32,8 +52,8 @@ const StyleSearch = styled.div`
   background-color: #e7e7e7;
   border-radius: 8px;
   position: absolute;
-  left:35%;
-  top:13px;
+  left: 35%;
+  top: 13px;
 
   input {
     width: 563px;
@@ -50,19 +70,19 @@ const StyleSearch = styled.div`
     top: 13px;
     background-color: #fff;
     border: none;
-    cursor: pointer;
   }
 `;
 
-// const ResultStyle = styled.div`
-//   display: flex;
-//   align-items: center;
-//   margin:16px;
+const ResultStyle = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 16px;
+  cursor: pointer;
 
-//   img {
-//     width: 39px;
-//     height: 39px;
-//     border-radius: 50%;
-//     margin: 0 10px;
-//   }
-// `;
+  img {
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    margin: 0 10px;
+  }
+`;
