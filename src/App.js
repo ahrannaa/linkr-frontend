@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import styled from "styled-components";
 import TimelinePage from "./pages/TimelinePage.js";
 import UserPage from "./pages/UserPage.js";
 
@@ -8,7 +7,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/timeline" element={<TimelinePage />} />
-        <Route path="/" element={<UserPage />} />
+        <Route path="/user/:id" element={<UserPage />} />
       </Routes>
     </BrowserRouter>
   );
