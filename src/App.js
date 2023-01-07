@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
 import TimelinePage from "./pages/TimelinePage.js";
 import SignInPage from "./pages/SignInPage.js";
 import GlobalStyle from "./GlobalStyle";
