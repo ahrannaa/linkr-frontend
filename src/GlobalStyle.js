@@ -47,11 +47,12 @@ table {
 
 body{
     background-color: #171717;
+	height: 100%;
 }
 
 *{
     box-sizing:border-box;
 }
-`
+`;
 
-export default GlobalStyle
+export default GlobalStyle;
