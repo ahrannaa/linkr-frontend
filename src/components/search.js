@@ -1,14 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import SearchIcon from "../assets/img/Vector.svg";
 
 export default function Search() {
   const [result, setResult] = useState([]);
   const [name, setName] = useState();
-  const navegate = useNavigate()
 
   useEffect(() => {
     if (name?.length > 2) {
@@ -20,7 +19,7 @@ export default function Search() {
         .catch((res) => {
           console.log(res);
         });
-    }else{
+    } else {
       setResult([]);
     }
   }, [name]);
@@ -32,6 +31,8 @@ export default function Search() {
         name="userName"
         minLength={0}
         debounceTimeout={300}
+        autoComplete="false"
+        value={name}
         onChange={(event) => setName(event.target.value)}
         placeholder="Search for people"
       />
@@ -39,10 +40,18 @@ export default function Search() {
         <img src={SearchIcon} alt="search-icon" />
       </button>
       {result?.map((user) => (
-        <ResultStyle key={user.id} onClick={() => navegate(`user/:${user.id}`)}>
-          <img src={user.picture} alt="avatar user" />
-          <span>{user.userName}</span>
-        </ResultStyle>
+        <Link to={`/user/${user.id}`}>
+          <ResultStyle
+            key={user.id}
+            onClick={() => {
+              setResult([]);
+              setName([]);
+            }}
+          >
+            <img src={user.picture} alt="avatar user" />
+            <span>{user.userName}</span>
+          </ResultStyle>
+        </Link>
       ))}
     </StyleSearch>
   );
@@ -54,6 +63,9 @@ const StyleSearch = styled.div`
   position: absolute;
   left: 35%;
   top: 13px;
+  a {
+    text-decoration: none;
+  }
 
   input {
     width: 563px;
@@ -62,6 +74,9 @@ const StyleSearch = styled.div`
     padding: 14px;
     font-size: 19px;
     border: none;
+    &:focus-visible {
+      outline: none;
+    }
   }
 
   button {
@@ -84,5 +99,12 @@ const ResultStyle = styled.div`
     height: 39px;
     border-radius: 50%;
     margin: 0 10px;
+  }
+
+  span {
+    font-size: 19px;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    color: #515151;
   }
 `;
