@@ -16,17 +16,12 @@ function App() {
       <GlobalStyle />
       <AuthContext.Provider value={{ user, setUser }}>
         <Routes>
-          <Route path="/timeline" element={<TimelinePage />} />
           <Route path="/" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/user/:id" element={<UserPage />} />
         </Routes>
       </AuthContext.Provider>
-      <Routes>
-        <Route path="/timeline" element={<TimelinePage />} />
-        <Route path="/" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/user/:id" element={<UserPage />} />
-      </Routes>
     </BrowserRouter>
   );
 }
