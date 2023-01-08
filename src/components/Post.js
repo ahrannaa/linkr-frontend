@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useRef, useEffect} from "react";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
@@ -9,6 +9,8 @@ export default function Post() {
   let subtitle;
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setEditing] = useState(false);
+  const [editInput, setEditInput] = useState("Uhul que link maneiro ula ula");
 
   const customStyles = {
     content: {
@@ -48,7 +50,13 @@ export default function Post() {
   }
 
   function editPost() {
-    alert("Editar funcionando");
+    setEditing(!isEditing);
+  }
+
+  document.onkeydown = function(e) {
+    if(e.key === 'Escape') {
+      setEditing(!isEditing);
+    }
   }
 
   return (
@@ -65,7 +73,9 @@ export default function Post() {
               <h2>Driven</h2>
             </Link>
             <IonIcon>
-              <ion-icon onClick={editPost} name="pencil-outline"></ion-icon>
+                <div>
+                  <ion-icon onClick={editPost} name="pencil-outline"></ion-icon>
+              </div>
               <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
               <Modal
                 isOpen={modalIsOpen}
@@ -94,7 +104,7 @@ export default function Post() {
               </Modal>
             </IonIcon>
           </Header>
-          <h3>Uhul que link maneiro ula ula</h3>
+          { isEditing ? <Input autoFocus defaultValue={editInput}/> : <h3 >Uhul que link maneiro ula ula</h3>}
         </PostContent>
       </PostCard>
     </>
@@ -153,4 +163,11 @@ const Header = styled.div`
 const IonIcon = styled.div`
   display: flex;
   margin-left: 20px;
+`;
+
+const Input = styled.input`
+background: #FFFFFF;
+border-radius: 7px;
+width: 503px;
+height: 44px;
 `;

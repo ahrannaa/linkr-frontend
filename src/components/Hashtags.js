@@ -34,7 +34,7 @@ export default function Hashtags() {
           return (
             <Hashtag
               onClick={() => {
-                openHashtag(h);
+                //openHashtag(h);
               }}
             >
               #{h.hashtag}
