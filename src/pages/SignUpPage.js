@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -10,17 +10,17 @@ export default function SignUpPage() {
     username: "",
     picture: "",
   });
+  const navigate = useNavigate();
 
   function sendUser(e) {
     e.preventDefault();
     axios
       .post("http://localhost:4000/signup", format)
       .then((res) => {
-        Navigate("/signin");
+        navigate("/");
       })
       .catch((res) => alert(res));
   }
-
   function register(e) {
     setFormat({ ...format, [e.target.name]: e.target.value });
   }
