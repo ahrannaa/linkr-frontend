@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import styled from "styled-components";
 import TopBar from "../components/TopBar.js";
 import Post from "../components/Post.js";
@@ -18,7 +17,7 @@ export default function TimelinePage() {
         <TimelineContent>
           <h1>timeline</h1>
           <NewPost />
-          <Post />
+          <Post/>
           {/* {latestPosts.map((latestPost, index) => <Post key={index} latestPost={latestPost} />)} */}
         </TimelineContent>
         <Hashtags />
