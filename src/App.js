@@ -3,7 +3,6 @@ import TimelinePage from "./pages/TimelinePage.js";
 import SignInPage from "./pages/SignInPage.js";
 import GlobalStyle from "./GlobalStyle";
 import SignUpPage from "./pages/SignUpPage.js";
-import { useState } from "react";
 import AuthContext from "./auth.js";
 import { useLocalStorage } from "./useLocalStorage.js";
 import UserPage from "./pages/UserPage.js";
