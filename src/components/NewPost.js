@@ -16,7 +16,7 @@ export default function NewPost({ dataPostReceived, setDataPostReceived }) {
         /* const config = { headers: { "Authorization": `Bearer ${token}` } }  */
         const body = formPost
 
-        axios.post("http://localhost:4000/posts", body, config)
+        axios.post("http://localhost:4000/posts", body)
             .then(() => {
                 setDataPostReceived(true)
                 setButtonClicked(false)

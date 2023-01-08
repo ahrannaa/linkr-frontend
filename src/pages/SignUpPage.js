@@ -1,7 +1,30 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 export default function SignUpPage() {
+  const [format, setFormat] = useState({
+    email: "",
+    password: "",
+    username: "",
+    picture: "",
+  });
+  const navigate = useNavigate();
+
+  function sendUser(e) {
+    e.preventDefault();
+    axios
+      .post("http://localhost:4000/signup", format)
+      .then((res) => {
+        navigate("/");
+      })
+      .catch((res) => alert(res));
+  }
+  function register(e) {
+    setFormat({ ...format, [e.target.name]: e.target.value });
+  }
+
   return (
     <PageContainer>
       <TitleContainer>
@@ -10,30 +33,38 @@ export default function SignUpPage() {
           save, share and discover <br /> the best links on the web
         </h2>
       </TitleContainer>
-      <FormContainer>
+      <FormContainer onSubmit={sendUser}>
         <input
           placeholder="e-mail"
           data-identifier="input-email"
           type="email"
           name="email"
+          value={format.email}
+          onChange={register}
         />
         <input
           placeholder="password"
           data-identifier="input-password"
           type="password"
-          name="senha"
+          name="password"
+          value={format.password}
+          onChange={register}
         />
         <input
           placeholder="username"
           data-identifier="input-username"
           type="text"
           name="username"
+          value={format.username}
+          onChange={register}
         />
         <input
           placeholder="picture url"
           data-identifier="input-picture"
           type="text"
           name="picture"
+          value={format.picture}
+          onChange={register}
         />
         <ButtonLogin type="submit">
           <h1>Sign Up</h1>

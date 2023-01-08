@@ -33,7 +33,6 @@ export default function TimelinePage() {
 
   return (
     <>
-      <GlobalStyle />
       <TimelineBackground>
         <TopBar />
         <TimelineContent>

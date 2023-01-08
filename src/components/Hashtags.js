@@ -1,27 +1,26 @@
-//import axios from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 export default function Hashtags() {
-  const [allHashtag, setAllHastag] = useState([
-    "#uhuul",
-    "#Energia",
-    "#Natureza",
-    "#Viagem",
-  ]);
+  const [allHashtag, setAllHastag] = useState([]);
 
-  // useEffect(()=> seachHashtag(),[])
-  //  function seachHashtag() {
-  //     const promise = axios.get(``)
-  //     promise.then((response)=> setAllHastag(response))
+  useEffect(function seachHashtag() {
+    const promise = axios.get(`http://localhost:4000/hashtags`);
+    promise.then((response) => setAllHastag(response.data));
+    promise.catch((resposta) => {
+      console.log("DEU RUIM", resposta);
+    });
+  }, []);
+
+  //   function openHashtag(hashtag) {
+  //     console.log(hashtag);
+  //     const promise = axios.get(`http://localhost:2000/hashtags/${hashtag}`)
+  //     promise.then((response)=>{console.log(response)})
+  //     promise.catch((resposta)=>{
+  //         console.log("DEU RUIM",resposta )
+  //       })
   //   }
-
-  function openHashtag(h) {
-    console.log(h);
-    const noHashtag = h.split("#");
-    console.log(noHashtag[1]);
-    //axios.get(``)
-  }
 
   return (
     <HashtagsCard>
@@ -29,13 +28,14 @@ export default function Hashtags() {
       <Line />
       <HashtagList>
         {allHashtag.map((h) => {
+          console.log(h);
           return (
             <Hashtag
-              onClick={() => {
+            /* onClick={() => {
                 openHashtag(h);
-              }}
+              }} */
             >
-              {h}
+              #{h.hashtag}
             </Hashtag>
           );
         })}
