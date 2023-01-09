@@ -1,7 +1,29 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import AuthContext from "../auth";
+import axios from "axios";
 
 export default function SignInPage() {
+  const [format, setFormat] = useState({ email: "", password: "" });
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  function sendUser(e) {
+    e.preventDefault();
+    axios
+      .post("http://localhost:4000/signin", format)
+      .then((res) => {
+        setUser(res.data);
+        navigate("/timeline");
+      })
+      .catch((res) => alert(res));
+  }
+
+  function register(e) {
+    setFormat({ ...format, [e.target.name]: e.target.value });
+  }
+
   return (
     <PageContainer>
       <TitleContainer>
@@ -10,18 +32,22 @@ export default function SignInPage() {
           save, share and discover <br /> the best links on the web
         </h2>
       </TitleContainer>
-      <FormContainer>
+      <FormContainer onSubmit={sendUser}>
         <input
           placeholder="e-mail"
           data-identifier="input-email"
           type="email"
           name="email"
+          value={format.email}
+          onChange={register}
         />
         <input
           placeholder="password"
           data-identifier="input-password"
           type="password"
-          name="senha"
+          name="password"
+          value={format.password}
+          onChange={register}
         />
         <ButtonLogin type="submit">
           <h1>Log In</h1>

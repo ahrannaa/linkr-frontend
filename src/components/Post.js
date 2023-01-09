@@ -1,47 +1,302 @@
+import axios from "axios";
+import { useContext, useState } from "react";
+import Modal from "react-modal";
+import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import AuthContext from "../auth.js";
 
-export default function Post(){
-    return(
-        <PostCard>
-            <img src={"data:image/png;base64,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"} alt="" />
-            <PostContent>
-                <h2>Driven</h2>
-                <h3>Uhul que link maneiro ula ula</h3>
-            </PostContent>
-        </PostCard>
-    )
+
+export default function Post({ latestPost }) {
+  let subtitle;
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setEditing] = useState(false);
+  const [editInput, setEditInput] = useState("");
+  const [like, setLike] = useState(false);
+  const [ heartIcon, setheartIcon] = useState("heart-outline");
+  const { user } = useContext(AuthContext);
+
+  //function fillHeart() {
+    //let heartClass = heartIcon
+    
+   // if (like) {
+     // setLike(false);
+    //  heartClass  = "heart-outline"
+   // } else {
+    //  setLike(true);
+     // heartClass = "heart"
+   // }
+   // setheartIcon(heartClass);
+ // }
+
+ const customStyles = {
+    content: {
+      width: "597px",
+      height: "262px",
+      background: "#333333",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
+
+  async function deletePost() {
+    setIsLoading(true);
+
+    const URL =`http://localhost:4000/posts/${latestPost.id}`;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+    try {
+      await axios.delete(URL, config)
+  } catch (err) {
+     alert(`error: ${err}`)
+  }
+    setTimeout(() => {
+      setIsLoading(false);
+      closeModal();
+    }, 3000);
+  }
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function afterOpenModal() {
+    subtitle.style.color = "#f00";
+  }
+  
+  function handleEditButton() {
+    setEditing(!isEditing)
+ }
+  
+ async function editPost() {
+  const URL = `http://localhost:4000/posts/${latestPost.id}`
+
+  const body = {
+    description: editInput,
+  }
+  console.log(body.description)
+  
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
+
+    try {
+      await axios.put(URL, body, config)
+  } catch (err) {
+    alert(`error: ${err}`)
+  }
+
+}
+ document.onkeydown = function(e) {
+  if(e.key === 'Escape') {
+    e.preventDefault();
+    setEditing(false);
+  } else if(e.key === "Enter") {
+    e.preventDefault();
+    editPost()
+ }
 }
 
+  function linkRedirection(link){
+    window.open(link, "_blank");
+  }
+
+  return (
+    <>
+      <PostCard>
+        <img
+          src={latestPost.picture}
+        />
+        <PostContent>
+          <Header>
+            <Link to={`/user/${user.id}`}>
+              <h2>{latestPost.name}</h2>
+            </Link>
+            <IonIcon>
+              <ion-icon onClick={handleEditButton} name="pencil-outline"></ion-icon>
+              <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
+              <Modal
+                isOpen={modalIsOpen}
+                onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+              >
+                {isLoading ? (
+                  <ColorRing
+                    type="ThreeDots"
+                    color="#4fa94d"
+                    height={80}
+                    width={80}
+                    ariaLabel="blocks-loading"
+                  />
+                ) : (
+                  <Box>
+                    <h2 ref={(_subtitle) => (subtitle = _subtitle)}>
+                      Are you sure you want to delete this post?
+                    </h2>
+                    <Button onClick={closeModal}>No,go back</Button>
+                    <Button onClick={deletePost}>Yes,delete it</Button>
+                  </Box>
+                )}
+              </Modal>
+            </IonIcon>
+          </Header>
+          <h3>{latestPost.text}</h3>
+          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<h3>{latestPost.description}</h3>}
+             <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
+                    <LinkInfo>
+                      <h2>{latestPost.title}</h2>
+                        <h3>{latestPost.preview}</h3>
+                        <h4>{latestPost.link}</h4>
+                    </LinkInfo>
+                    <img src={latestPost.pic} />
+                </LinkDisplayer>
+        </PostContent>
+      </PostCard>
+    </>
+  );
+ }
+
 const PostCard = styled.div`
-    width: 611px;
-    background-color: #000000;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius:16px;
-    padding: 16px;
-    display: flex;
-    img{
-        width:50px;
-        height: 50px;
-        border-radius: 50%;
-    }
+  width: 611px;
+  background-color: #000000;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  display: flex;
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
 `
 const PostContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-left: 19px;
-    margin-bottom:16px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 19px;
+  margin-bottom: 16px;
+
+  a {
+    text-decoration: none;
+  }
+
+  h2 {
+    color: #ffffff;
+    font-size: 19px;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    margin-bottom: 13px;
+  }
+
+  ion-icon {
+    font-size: 19px;
+    color: #ffffff;
+    margin-left: 8px;
+  }
+
+  h3 {
+    color: #b7b7b7;
+    font-size: 17px;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    margin-bottom: 13px;
+  }
+`;
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+const IonIcon = styled.div`
+  display: flex;
+  margin-left: 20px;
+`;
+ const LinkDisplayer = styled.div`
+    background-color: #000000;
+    width: 503px;
+    height: 155px;
+    border-radius: 11px;
+    border: 1px solid #4d4d4d;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+    img{
+        width: 154px;
+        height: 154px;
+        border-radius: 0px;
+    }
+`
+const LinkInfo = styled.div`
+    width:347px;
+    height: 154px;
+    padding: 19px;
+
     h2{
-        color: #ffffff;
-        font-size:19px;
+        color: #cecece;
+        font-size:16px;
         font-family: 'Lato', sans-serif;
         font-weight: 400;
-        margin-bottom: 13px;
+        margin-bottom: 8px;
     }
     h3{
-        color: #b7b7b7;
-        font-size:17px;
+        color: #9b9595;
+        font-size:11px;
         font-family: 'Lato', sans-serif;
         font-weight: 400;
-        margin-bottom: 13px;
+        margin-bottom: 14px;
     }
+    h4{
+        color: #cecece;
+        font-size:11px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+`;
+const Input = styled.input`
+background: #FFFFFF;
+border-radius: 7px;
+width: 503px;
+height: 44px;
+`;
+const Box = styled.div`
+
+h2 {
+  color: blue;
+  font-size: 34px;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  margin-bottom: 13px;
+  text-align: center
+}
+
+`
+const Button = styled.button `
+  color: blue,
+  width: 200px,
+  height: 90px,
+  display: flex,
+  top: 508px;
+ 
+  :hover {
+   background-color: #1877F2;
+  }
 `

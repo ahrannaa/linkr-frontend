@@ -33,18 +33,11 @@ export default function Hashtags(props) {
     
   }
 
-
-  return (
-    <HashtagsCard>
-      <Title> trending </Title>
-      <Line />
-      <HashtagList>
-        {allHashtag.map((h) => {
           return (
             <Hashtag
-              onClick={() => {
+             onClick={() => {
                 openHashtag(h);
-              }}
+              }} 
             >
               #{h.hashtag}
             </Hashtag>
