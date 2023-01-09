@@ -31,7 +31,7 @@ export default function Hashtags(props) {
       console.log("DEU RUIM", resposta);
     });
 
-    
+
   }
 
 
