@@ -165,7 +165,7 @@ export default function Post({ latestPost }) {
               </Modal>
             </IonIcon>
           </Header>
-          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<ReactTagify tagStyle={tagDisplay} /* tagClicked={(t)=>{navigate(`/hashtag/${t.replace("#","")}`)}} */><h3>{latestPost.text}</h3></ReactTagify>}
+          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<ReactTagify tagStyle={tagDisplay} tagClicked={(t)=>{navigate(`/hashtag/${t.replace("#","")}`)}} ><h3>{latestPost.text}</h3></ReactTagify>}
              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
                     <LinkInfo>
                       <h2>{latestPost.title}</h2>

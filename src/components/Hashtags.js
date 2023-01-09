@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Hashtags(props) {
+
+  const { setInfoHashtag } = props;
   const [allHashtag, setAllHastag] = useState([]);
-  const { infoHashtag, setInfoHashtag } = props;
   const navigate = useNavigate();
 
   useEffect(function seachHashtag() {
@@ -33,19 +34,26 @@ export default function Hashtags(props) {
 
   }
 
- /*  return (
-    <Hashtag
-      onClick={() => {
-        openHashtag(h);
-      }}
-    >
-      #{h.hashtag}
-    </Hashtag>
+
+  return (
+    <HashtagsCard>
+      <Title> trending </Title>
+      <Line />
+      <HashtagList>
+        {allHashtag.map((h) => {
+          return (
+            <Hashtag
+             onClick={() => {
+                openHashtag(h);
+              }} 
+            >
+              #{h.hashtag}
+            </Hashtag>
+          );
+        })}
+      </HashtagList>
+    </HashtagsCard>
   );
-})}
-      </HashtagList >
-    </HashtagsCard >
-  ); */
 }
 
 const HashtagsCard = styled.div`

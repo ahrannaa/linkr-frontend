@@ -15,13 +15,13 @@ function App() {
     <BrowserRouter>
       <GlobalStyle />
       <AuthContext.Provider value={{ user, setUser }}>
-        <Routes>
-          <Route path="/timeline" element={<TimelinePage />} />
-          <Route path="/" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/user/:id" element={<UserPage />} />
-          <Route path="/hashtag/:hashtag" element={<HashtagPage />} />
-        </Routes>
+      <Routes>
+        <Route path="/timeline" element={<TimelinePage />} />
+        <Route path="/" element={<SignInPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/user/:id" element={<UserPage />} />
+        <Route path="/hashtag/:hashtag" element = {<HashtagPage/>} />
+      </Routes>
       </AuthContext.Provider>
     </BrowserRouter>
   );

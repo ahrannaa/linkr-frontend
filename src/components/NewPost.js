@@ -17,7 +17,7 @@ export default function NewPost({ dataPostReceived, setDataPostReceived }) {
 
     function sendPostData(e) {
         e.preventDefault()
-        const config = { headers: { Authorization: `Bearer ${user}` } };
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
         const body = formPost
 
         axios.post("http://localhost:4000/posts", body, config)
