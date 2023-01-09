@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import AuthContext from "../auth.js";
+
 
 export default function Post({ latestPost }) {
   let subtitle;
@@ -11,10 +13,28 @@ export default function Post({ latestPost }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [editInput, setEditInput] = useState("");
+  const [like, setLike] = useState(false);
+  const [ heartIcon, setheartIcon] = useState("heart-outline");
+  const { user } = useContext(AuthContext);
 
+  //function fillHeart() {
+    //let heartClass = heartIcon
+    
+   // if (like) {
+     // setLike(false);
+    //  heartClass  = "heart-outline"
+   // } else {
+    //  setLike(true);
+     // heartClass = "heart"
+   // }
+   // setheartIcon(heartClass);
+ // }
 
-  const customStyles = {
+ const customStyles = {
     content: {
+      width: "597px",
+      height: "262px",
+      background: "#333333",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -27,11 +47,16 @@ export default function Post({ latestPost }) {
   async function deletePost() {
     setIsLoading(true);
 
-    const URL = "http://localhost:4000/posts/15";
-    const headers = { Authorization: `Bearer 12345678` };
-    axios.delete(URL, { headers });
+    const URL =`http://localhost:4000/posts/${latestPost.id}`;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
     try {
-      await axios.delete(URL, { headers })
+      await axios.delete(URL, config)
   } catch (err) {
      alert(`error: ${err}`)
   }
@@ -58,16 +83,21 @@ export default function Post({ latestPost }) {
  }
   
  async function editPost() {
-  const URL = "http://localhost:4000/posts/14"
+  const URL = `http://localhost:4000/posts/${latestPost.id}`
 
   const body = {
     description: editInput,
   }
   console.log(body.description)
-  const headers = { Authorization: `Bearer 12345678` };
+  
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
 
     try {
-      await axios.put(URL, body, headers)
+      await axios.put(URL, body, config)
   } catch (err) {
     alert(`error: ${err}`)
   }
@@ -94,7 +124,7 @@ export default function Post({ latestPost }) {
         />
         <PostContent>
           <Header>
-            <Link to={`/user/${1/*id do user*/ }`}>
+            <Link to={`/user/${user.id}`}>
               <h2>{latestPost.name}</h2>
             </Link>
             <IonIcon>
@@ -116,21 +146,22 @@ export default function Post({ latestPost }) {
                     ariaLabel="blocks-loading"
                   />
                 ) : (
-                  <div>
+                  <Box>
                     <h2 ref={(_subtitle) => (subtitle = _subtitle)}>
                       Are you sure you want to delete this post?
                     </h2>
-                    <button onClick={closeModal}>No,go back</button>
-                    <button onClick={deletePost}>Yes,delete it</button>
-                  </div>
+                    <Button onClick={closeModal}>No,go back</Button>
+                    <Button onClick={deletePost}>Yes,delete it</Button>
+                  </Box>
                 )}
               </Modal>
             </IonIcon>
           </Header>
+          <h3>{latestPost.text}</h3>
           { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<h3>{latestPost.description}</h3>}
-                <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
+             <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
                     <LinkInfo>
-                        <h2>{latestPost.title}</h2>
+                      <h2>{latestPost.title}</h2>
                         <h3>{latestPost.preview}</h3>
                         <h4>{latestPost.link}</h4>
                     </LinkInfo>
@@ -141,7 +172,6 @@ export default function Post({ latestPost }) {
     </>
   );
  }
-
 
 const PostCard = styled.div`
   width: 611px;
@@ -197,9 +227,7 @@ const IonIcon = styled.div`
   display: flex;
   margin-left: 20px;
 `;
- 
-
-const LinkDisplayer = styled.div`
+ const LinkDisplayer = styled.div`
     background-color: #000000;
     width: 503px;
     height: 155px;
@@ -215,7 +243,6 @@ const LinkDisplayer = styled.div`
         border-radius: 0px;
     }
 `
-
 const LinkInfo = styled.div`
     width:347px;
     height: 154px;
@@ -249,4 +276,26 @@ border-radius: 7px;
 width: 503px;
 height: 44px;
 `;
+const Box = styled.div`
 
+h2 {
+  color: blue;
+  font-size: 34px;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  margin-bottom: 13px;
+  text-align: center
+}
+
+`
+const Button = styled.button `
+  color: blue,
+  width: 200px,
+  height: 90px,
+  display: flex,
+  top: 508px;
+ 
+  :hover {
+   background-color: #1877F2;
+  }
+`

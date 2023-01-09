@@ -13,14 +13,14 @@ export default function Hashtags() {
     });
   }, []);
 
-  //   function openHashtag(hashtag) {
-  //     console.log(hashtag);
-  //     const promise = axios.get(`http://localhost:2000/hashtags/${hashtag}`)
-  //     promise.then((response)=>{console.log(response)})
-  //     promise.catch((resposta)=>{
-  //         console.log("DEU RUIM",resposta )
-  //       })
-  //   }
+     function openHashtag(hashtag) {
+      console.log(hashtag);
+    const promise = axios.get(`http://localhost:2000/hashtags/${hashtag}`)
+      promise.then((response)=>{console.log(response)})
+     promise.catch((resposta)=>{
+          console.log("DEU RUIM",resposta )
+        })
+     }
 
   return (
     <HashtagsCard>
@@ -31,9 +31,9 @@ export default function Hashtags() {
           console.log(h);
           return (
             <Hashtag
-            /* onClick={() => {
+             onClick={() => {
                 openHashtag(h);
-              }} */
+              }} 
             >
               #{h.hashtag}
             </Hashtag>
