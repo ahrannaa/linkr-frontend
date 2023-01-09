@@ -20,7 +20,6 @@ export default function TopBar() {
       .get("http://localhost:4000/info/user", config)
       .then((res) => {
         setInfosUser(res.data);
-        console.log(infosUser);
       })
       .catch((res) => alert(res.data));
   }, [user]);
