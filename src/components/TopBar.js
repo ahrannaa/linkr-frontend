@@ -28,6 +28,7 @@ const BarLayout = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0px 28px;
+  z-index: 3;
   h1 {
     font-size: 49px;
     color: #ffffff;
