@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useContext} from "react";
 import styled from "styled-components";
 import axios from "axios";
+import AuthContext from "../auth";
+
 
 export default function NewPost({ dataPostReceived, setDataPostReceived }) {
     const [formPost, setFormPost] = useState({ text: "", link: "" })
     const [buttonClicked, setButtonClicked] = useState(false)
+    const { user } = useContext(AuthContext);
+   
 
     function handlePostForm(e) {
         const { name, value } = e.target
@@ -13,15 +17,16 @@ export default function NewPost({ dataPostReceived, setDataPostReceived }) {
 
     function sendPostData(e) {
         e.preventDefault()
-        /* const config = { headers: { "Authorization": `Bearer ${token}` } }  */
+        const config = { headers: { Authorization: `Bearer ${user}` } };
         const body = formPost
 
-        axios.post("http://localhost:4000/posts", body)
+        axios.post("http://localhost:4000/posts", body, config)
             .then(() => {
                 setDataPostReceived(true)
                 setButtonClicked(false)
             })
             .catch((err) => {
+                console.log(err)
                 alert("Houve um erro ao publicar seu link")
             })
     }
