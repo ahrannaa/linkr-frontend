@@ -34,8 +34,6 @@ export default function Hashtags(props) {
     
   }
 
-<<<<<<< HEAD
-
 
   return (
     <HashtagsCard>
@@ -43,8 +41,6 @@ export default function Hashtags(props) {
       <Line />
       <HashtagList>
         {allHashtag.map((h) => {
-=======
->>>>>>> main
           return (
             <Hashtag
              onClick={() => {
