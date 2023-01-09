@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
-
 import styled from "styled-components";
 import TopBar from "../components/TopBar.js";
 import Post from "../components/Post.js";
@@ -13,14 +12,14 @@ export default function TimelinePage() {
   const [dataPostReceived, setDataPostReceived] = useState(false)
 
   useEffect(() => {
-    axios.get("http://localhost:4000/posts")
+     axios.get("http://localhost:4000/posts")
       .then(res => {
-        setLatestPosts(res.data)
+         setLatestPosts(res.data)
         setDataPostReceived(false)
-      })
-      .catch(err => {
-        alert("An error ocurred while trying to fetch the posts, please refresh the page")
-      })
+       })
+       .catch(err => {
+         alert("An error ocurred while trying to fetch the posts, please refresh the page")
+       })
   }, [dataPostReceived])
 
   if (!latestPosts){
