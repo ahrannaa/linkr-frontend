@@ -133,7 +133,7 @@ export default function Post({ latestPost }) {
         </div>
         <PostContent>
           <Header>
-            <Link to={`/user/${user.id}`}>
+            <Link to={`/user/${latestPost.userId}`}>
               <h2>{latestPost.name}</h2>
             </Link>
             {user.id === latestPost.userId && 
