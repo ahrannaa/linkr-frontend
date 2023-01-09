@@ -6,9 +6,9 @@ import Hashtags from "../components/Hashtags.js";
 import PostHashtags from "../components/PostHashtags.js";
 import TopBar from "../components/TopBar.js";
 export default function HashtagPage() {
-  const[allHashtags, setAllHashags] = useState([]);
+  const [allHashtags, setAllHashags]= useState([]);
+  const [infoHashtag, setInfoHashtag] = useState([]);
   const { hashtag } = useParams();
-
   useEffect(() => {
     const promise = axios.get(`http://localhost:4000/post/${hashtag}`);
     promise.then((response) => {
@@ -26,7 +26,7 @@ export default function HashtagPage() {
           <h1>#{hashtag}</h1>
           <PostHashtags allHashtags={allHashtags} />
         </TimelineContent>
-        <Hashtags />
+        <Hashtags infoHashtag={infoHashtag} setInfoHashtag={setInfoHashtag}  />
       </TimelineBackground>
     </>
   );
