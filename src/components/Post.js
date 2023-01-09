@@ -10,7 +10,8 @@ export default function Post() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
-  const [editInput, setEditInput] = useState("Uhul que link maneiro ula ula");
+  const [editInput, setEditInput] = useState("");
+
 
   const customStyles = {
     content: {
@@ -23,14 +24,16 @@ export default function Post() {
     },
   };
 
-  function deletePost() {
+  async function deletePost() {
     setIsLoading(true);
     const URL = "http://localhost:4000/posts/15";
     const headers = { Authorization: `Bearer 12345678` };
-    const promisse = axios.delete(URL, { headers });
-    promisse.then((resp) => console.log(resp));
-    promisse.catch((err) => console.log(err));
-
+    axios.delete(URL, { headers });
+    try {
+      await axios.delete(URL, { headers })
+  } catch (err) {
+     alert(`error: ${err}`)
+  }
     setTimeout(() => {
       setIsLoading(false);
       closeModal();
@@ -49,14 +52,34 @@ export default function Post() {
     subtitle.style.color = "#f00";
   }
 
-  function editPost() {
-    setEditing(!isEditing);
+  function handleEditButton() {
+     setEditing(!isEditing)
   }
+  
+ async function editPost() {
+    const URL = "http://localhost:4000/posts/14"
+  
+    const body = {
+      description: editInput,
+    }
+    console.log(body.description)
+    const headers = { Authorization: `Bearer 12345678` };
 
+      try {
+        await axios.put(URL, body, headers)
+    } catch (err) {
+      alert(`error: ${err}`)
+    }
+  }
+     
   document.onkeydown = function(e) {
     if(e.key === 'Escape') {
-      setEditing(!isEditing);
-    }
+      e.preventDefault();
+      setEditing(false);
+    } else if(e.key === "Enter") {
+      e.preventDefault();
+      editPost()
+}
   }
 
   return (
@@ -74,7 +97,7 @@ export default function Post() {
             </Link>
             <IonIcon>
                 <div>
-                  <ion-icon onClick={editPost} name="pencil-outline"></ion-icon>
+                  <ion-icon onClick={handleEditButton} name="pencil-outline"></ion-icon>
               </div>
               <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
               <Modal
@@ -104,7 +127,7 @@ export default function Post() {
               </Modal>
             </IonIcon>
           </Header>
-          { isEditing ? <Input autoFocus defaultValue={editInput}/> : <h3 >Uhul que link maneiro ula ula</h3>}
+          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> : <h3 >Uhul que link maneiro ula ula</h3>}
         </PostContent>
       </PostCard>
     </>
