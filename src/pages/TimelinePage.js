@@ -9,6 +9,7 @@ import Hashtags from "../components/Hashtags.js";
 
 export default function TimelinePage() {
   const [latestPosts, setLatestPosts] = useState([]);
+  const [infoHashtag, setInfoHashtag] = useState([])
   const [dataPostReceived, setDataPostReceived] = useState(false)
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function TimelinePage() {
     )
   }
 
+
   return (
     <>
       <TimelineBackground>
@@ -45,7 +47,7 @@ export default function TimelinePage() {
           )}
           </> 
         </TimelineContent>
-        <Hashtags />
+        <Hashtags infoHashtag={infoHashtag} setInfoHashtag={setInfoHashtag} />
       </TimelineBackground>
     </>
   );

@@ -101,6 +101,7 @@ export default function Post({ latestPost }) {
   } catch (err) {
     alert(`error: ${err}`)
   }
+
 }
  document.onkeydown = function(e) {
   if(e.key === 'Escape') {
