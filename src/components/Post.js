@@ -48,7 +48,7 @@ export default function Post({ latestPost }) {
   async function deletePost() {
     setIsLoading(true);
 
-    const URL =`http://localhost:4000/posts/${latestPost.id}`;
+    const URL =`https://linkr-api-0l14.onrender.com/posts/${latestPost.id}`;
 
     const config = {
       headers: {
@@ -85,7 +85,7 @@ export default function Post({ latestPost }) {
  }
   
  async function editPost() {
-  const URL = `http://localhost:4000/posts/${latestPost.id}`
+  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}`
 
   const body = {
     description: (editInput),
@@ -143,8 +143,10 @@ export default function Post({ latestPost }) {
                   <ColorRing
                     type="ThreeDots"
                     color="#4fa94d"
-                    height={80}
-                    width={80}
+
+                    height={150}
+                    width={150}
+
                     ariaLabel="blocks-loading"
                   />
                 ) : (
