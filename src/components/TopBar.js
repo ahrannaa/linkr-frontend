@@ -33,6 +33,7 @@ export default function TopBar() {
     <BarLayout>
       <h1>linkr</h1>
       <Search />
+
       <UserDiv infosUser={infosUser}>
         <ion-icon
           name={displayButton ? "chevron-up-outline" : "chevron-down-outline"}

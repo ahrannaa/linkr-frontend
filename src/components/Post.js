@@ -1,10 +1,11 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import AuthContext from "../auth.js";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../auth";
+import { ReactTagify } from "react-tagify";
 
 
 export default function Post({ latestPost }) {
@@ -12,10 +13,11 @@ export default function Post({ latestPost }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
-  const [editInput, setEditInput] = useState("");
+  const [editInput, setEditInput] = useState(latestPost.text);
   const [like, setLike] = useState(false);
   const [ heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   //function fillHeart() {
     //let heartClass = heartIcon
@@ -51,7 +53,7 @@ export default function Post({ latestPost }) {
 
     const config = {
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user}`,
       },
     };
 
@@ -63,6 +65,7 @@ export default function Post({ latestPost }) {
     setTimeout(() => {
       setIsLoading(false);
       closeModal();
+       window.location.reload(true)
     }, 3000);
   }
 
@@ -86,21 +89,20 @@ export default function Post({ latestPost }) {
   const URL = `http://localhost:4000/posts/${latestPost.id}`
 
   const body = {
-    description: editInput,
+    description: (editInput),
   }
   console.log(body.description)
   
-  const config = {
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  };
+  const config = { headers: { Authorization: `Bearer ${user}` } };
 
     try {
       await axios.put(URL, body, config)
+      setEditInput(body.description)
+      window.location.reload(true);
   } catch (err) {
     alert(`error: ${err}`)
   }
+
 }
  document.onkeydown = function(e) {
   if(e.key === 'Escape') {
@@ -109,11 +111,17 @@ export default function Post({ latestPost }) {
   } else if(e.key === "Enter") {
     e.preventDefault();
     editPost()
+    
  }
 }
 
   function linkRedirection(link){
     window.open(link, "_blank");
+  }
+
+  const tagDisplay ={
+    color: "white",
+    fontWeight: 700,
   }
 
   return (
@@ -157,8 +165,7 @@ export default function Post({ latestPost }) {
               </Modal>
             </IonIcon>
           </Header>
-          <h3>{latestPost.text}</h3>
-          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<h3>{latestPost.description}</h3>}
+          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<ReactTagify tagStyle={tagDisplay} /* tagClicked={(t)=>{navigate(`/hashtag/${t.replace("#","")}`)}} */><h3>{latestPost.text}</h3></ReactTagify>}
              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
                     <LinkInfo>
                       <h2>{latestPost.title}</h2>
