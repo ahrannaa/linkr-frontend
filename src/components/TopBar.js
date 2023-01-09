@@ -17,7 +17,7 @@ export default function TopBar() {
     }
     const config = { headers: { Authorization: `Bearer ${user.token}` } };
     axios
-      .get("http://localhost:4000/info/user", config)
+      .get("https://linkr-api-0l14.onrender.com/info/user", config)
       .then((res) => {
         setInfosUser(res.data);
       })
