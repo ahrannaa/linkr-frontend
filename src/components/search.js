@@ -12,7 +12,7 @@ export default function Search() {
   useEffect(() => {
     if (name?.length > 2) {
       axios
-        .get(`http://localhost:4000/search/${name}`)
+        .get(`https://linkr-api-0l14.onrender.com/search/${name}`)
         .then((res) => {
           setResult(res.data);
         })
