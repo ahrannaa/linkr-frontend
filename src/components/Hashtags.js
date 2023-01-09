@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-export default function Hashtags() {
+export default function Hashtags(props) {
   const [allHashtag, setAllHastag] = useState([]);
+  const { infoHashtag, setInfoHashtag } = props;
+  const navigate = useNavigate();
 
   useEffect(function seachHashtag() {
     const promise = axios.get(`http://localhost:4000/hashtags`);
@@ -13,22 +16,23 @@ export default function Hashtags() {
     });
   }, []);
 
-     function openHashtag(hashtag) {
-      console.log(hashtag);
-    const promise = axios.get(`http://localhost:2000/hashtags/${hashtag}`)
-      promise.then((response)=>{console.log(response)})
-     promise.catch((resposta)=>{
-          console.log("DEU RUIM",resposta )
-        })
-     }
+  function openHashtag(hashtag) {
+    const promise = axios.get(
+      `http://localhost:4000/hashtags/${hashtag.hashtag}`
+    );
 
-  return (
-    <HashtagsCard>
-      <Title> trending </Title>
-      <Line />
-      <HashtagList>
-        {allHashtag.map((h) => {
-          console.log(h);
+    promise.then((response) => {
+      setInfoHashtag(response.data)
+      navigate(`/hashtag/${response.data.hashtag}`)
+    });
+
+    promise.catch((resposta) => {
+      console.log("DEU RUIM", resposta);
+    });
+
+    
+  }
+
           return (
             <Hashtag
              onClick={() => {
