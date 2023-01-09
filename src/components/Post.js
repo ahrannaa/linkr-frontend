@@ -18,25 +18,24 @@ export default function Post({ latestPost }) {
   const { user } = useContext(AuthContext);
 
 
-   function fillHeart() {
-    let heartClass = heartIcon
+  //function fillHeart() {
+    //let heartClass = heartIcon
     
-     if (like) {
-      setLike(false);
-      heartClass  = "heart-outline"
-    } else {
-      setLike(true);
-      heartClass = "heart"
-    }
-    setheartIcon(heartClass);
-  }
+   // if (like) {
+     // setLike(false);
+    //  heartClass  = "heart-outline"
+   // } else {
+    //  setLike(true);
+     // heartClass = "heart"
+   // }
+   // setheartIcon(heartClass);
+ // }
 
  const customStyles = {
     content: {
       width: "597px",
       height: "262px",
       background: "#333333",
-      borderRadius: "50px",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -53,25 +52,19 @@ export default function Post({ latestPost }) {
 
     const config = {
       headers: {
-        Authorization: `Bearer ${user.token}`,
+        Authorization: `Bearer ${user}`,
       },
     };
 
     try {
       await axios.delete(URL, config)
-      setTimeout(() => {
-        closeModal();
-        setIsLoading(false);
-        window.location.reload(true);
-      }, 3000);
   } catch (err) {
-    closeModal()
-    alert(`error: ${err}`)
-    
+     alert(`error: ${err}`)
   }
     setTimeout(() => {
       setIsLoading(false);
       closeModal();
+       window.location.reload(true)
     }, 3000);
   }
 
@@ -84,7 +77,7 @@ export default function Post({ latestPost }) {
   }
 
   function afterOpenModal() {
-    subtitle.style.color = "#ffffff";
+    subtitle.style.color = "#f00";
   }
   
   function handleEditButton() {
@@ -99,7 +92,7 @@ export default function Post({ latestPost }) {
   }
   console.log(body.description)
   
-  const config = { headers: { Authorization: `Bearer ${user.token}` } };
+  const config = { headers: { Authorization: `Bearer ${user}` } };
 
     try {
       await axios.put(URL, body, config)
@@ -128,33 +121,30 @@ export default function Post({ latestPost }) {
   return (
     <>
       <PostCard>
-        <div>
-         <img src={latestPost.picture} />
-          <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
-        </div>
+        <img
+          src={latestPost.picture}
+        />
         <PostContent>
           <Header>
-            <Link to={`/user/${user.id}`}>
+            <Link to={`/user/${latestPost.userId}`}>
               <h2>{latestPost.name}</h2>
             </Link>
-            {user.id === latestPost.userId && 
-              <IonIcon>
-                <ion-icon onClick={handleEditButton} name="pencil-outline"></ion-icon>
-                <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
-                <Modal
-                  isOpen={modalIsOpen}
-                  onAfterOpen={afterOpenModal}
-                  onRequestClose={closeModal}
-                  style={customStyles}
-                  contentLabel="Example Modal"
-                >
+            <IonIcon>
+              <ion-icon onClick={handleEditButton} name="pencil-outline"></ion-icon>
+              <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
+              <Modal
+                isOpen={modalIsOpen}
+                onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+              >
                 {isLoading ? (
                   <ColorRing
                     type="ThreeDots"
                     color="#4fa94d"
-                    height={150}
-                    width={150}
-                    left = {90}
+                    height={80}
+                    width={80}
                     ariaLabel="blocks-loading"
                   />
                 ) : (
@@ -168,7 +158,6 @@ export default function Post({ latestPost }) {
                 )}
               </Modal>
             </IonIcon>
-            }
           </Header>
           { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<h3>{latestPost.text}</h3>}
              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
@@ -197,13 +186,6 @@ const PostCard = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
-  }
-
-  ion-icon {
-    font-size: 19px;
-    color: red;
-    margin-left: 17px;
-    margin-top: 20px
   }
 `
 const PostContent = styled.div`
@@ -245,7 +227,6 @@ const Header = styled.div`
 const IonIcon = styled.div`
   display: flex;
   margin-left: 20px;
-
 `;
  const LinkDisplayer = styled.div`
     background-color: #000000;
@@ -297,23 +278,25 @@ width: 503px;
 height: 44px;
 `;
 const Box = styled.div`
-  font-size: 35px;
+
+h2 {
+  color: blue;
+  font-size: 34px;
   font-family: "Lato", sans-serif;
   font-weight: 400;
-  border-radius: 50px;
   margin-bottom: 13px;
-  text-align: center;
- 
+  text-align: center
+}
+
 `
 const Button = styled.button `
-  color:#000000;
-  width: 134px;
-  height: 37px;
-  border-radius:10px;
-  margin-top:50px;
+  color: blue,
+  width: 200px,
+  height: 90px,
+  display: flex,
   top: 508px;
-  
+ 
   :hover {
-   background: #1877F2;
+   background-color: #1877F2;
   }
 `

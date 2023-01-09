@@ -8,19 +8,28 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 export default function UserPage() {
-  const [user, setUser] = useState();
+  const [postsUser, setPostsUser] = useState();
   const { id } = useParams();
 
   useEffect(() => {
     axios
       .get(`http://localhost:4000/user/${id}`)
       .then((res) => {
-        setUser(res.data[0]);
+        console.log(res.data)
+        setPostsUser(res.data);
       })
       .catch((res) => {
         console.log(res);
       });
   }, [id]);
+
+  if (!postsUser){
+    return(
+      <UserPageStyle>
+        <h1>Loading...</h1>
+      </UserPageStyle>
+    )
+  }
 
   return (
     <>
@@ -29,11 +38,10 @@ export default function UserPage() {
         <TopBar />
         <UserPageStyle>
           <div>
-            <img src={user?.picture} alt="avatar user" />
-            <h1>{user?.userName} posts</h1>
+            <img src={postsUser[0].picture} alt="avatar user" />
+            <h1>{postsUser[0].userName} posts</h1>
           </div>
-          <Post />
-          {/* {latestPosts.map((latestPost, index) => <Post key={index} latestPost={latestPost} />)} */}
+          {postsUser.map((post, index) => <Post key={index} latestPost={post} />)}
         </UserPageStyle>
         <Hashtags />
       </TimelineBackground>
