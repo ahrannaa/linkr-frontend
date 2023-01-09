@@ -19,24 +19,25 @@ export default function Post({ latestPost }) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  //function fillHeart() {
-    //let heartClass = heartIcon
+   function fillHeart() {
+    let heartClass = heartIcon
     
-   // if (like) {
-     // setLike(false);
-    //  heartClass  = "heart-outline"
-   // } else {
-    //  setLike(true);
-     // heartClass = "heart"
-   // }
-   // setheartIcon(heartClass);
- // }
+     if (like) {
+      setLike(false);
+      heartClass  = "heart-outline"
+    } else {
+      setLike(true);
+      heartClass = "heart"
+    }
+    setheartIcon(heartClass);
+  }
 
  const customStyles = {
     content: {
       width: "597px",
       height: "262px",
       background: "#333333",
+      borderRadius: "50px",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -53,19 +54,25 @@ export default function Post({ latestPost }) {
 
     const config = {
       headers: {
-        Authorization: `Bearer ${user}`,
+        Authorization: `Bearer ${user.token}`,
       },
     };
 
     try {
       await axios.delete(URL, config)
+      setTimeout(() => {
+        closeModal();
+        setIsLoading(false);
+        window.location.reload(true);
+      }, 3000);
   } catch (err) {
-     alert(`error: ${err}`)
+    closeModal()
+    alert(`error: ${err}`)
+    
   }
     setTimeout(() => {
       setIsLoading(false);
       closeModal();
-       window.location.reload(true)
     }, 3000);
   }
 
@@ -78,7 +85,7 @@ export default function Post({ latestPost }) {
   }
 
   function afterOpenModal() {
-    subtitle.style.color = "#f00";
+    subtitle.style.color = "#ffffff";
   }
   
   function handleEditButton() {
@@ -93,7 +100,7 @@ export default function Post({ latestPost }) {
   }
   console.log(body.description)
   
-  const config = { headers: { Authorization: `Bearer ${user}` } };
+  const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
     try {
       await axios.put(URL, body, config)
@@ -127,30 +134,33 @@ export default function Post({ latestPost }) {
   return (
     <>
       <PostCard>
-        <img
-          src={latestPost.picture}
-        />
+        <div>
+         <img src={latestPost.picture} />
+          <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+        </div>
         <PostContent>
           <Header>
             <Link to={`/user/${user.id}`}>
               <h2>{latestPost.name}</h2>
             </Link>
-            <IonIcon>
-              <ion-icon onClick={handleEditButton} name="pencil-outline"></ion-icon>
-              <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
-              <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Example Modal"
-              >
+            {user.id === latestPost.userId && 
+              <IonIcon>
+                <ion-icon onClick={handleEditButton} name="pencil-outline"></ion-icon>
+                <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
+                <Modal
+                  isOpen={modalIsOpen}
+                  onAfterOpen={afterOpenModal}
+                  onRequestClose={closeModal}
+                  style={customStyles}
+                  contentLabel="Example Modal"
+                >
                 {isLoading ? (
                   <ColorRing
                     type="ThreeDots"
                     color="#4fa94d"
-                    height={80}
-                    width={80}
+                    height={150}
+                    width={150}
+                    left = {90}
                     ariaLabel="blocks-loading"
                   />
                 ) : (
@@ -164,6 +174,7 @@ export default function Post({ latestPost }) {
                 )}
               </Modal>
             </IonIcon>
+            }
           </Header>
           { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<ReactTagify tagStyle={tagDisplay} tagClicked={(t)=>{navigate(`/hashtag/${t.replace("#","")}`)}} ><h3>{latestPost.text}</h3></ReactTagify>}
              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
@@ -192,6 +203,13 @@ const PostCard = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
+  }
+
+  ion-icon {
+    font-size: 19px;
+    color: red;
+    margin-left: 17px;
+    margin-top: 20px
   }
 `
 const PostContent = styled.div`
@@ -233,6 +251,7 @@ const Header = styled.div`
 const IonIcon = styled.div`
   display: flex;
   margin-left: 20px;
+
 `;
  const LinkDisplayer = styled.div`
     background-color: #000000;
@@ -284,24 +303,23 @@ width: 503px;
 height: 44px;
 `;
 const Box = styled.div`
-
-h2 {
-  color: blue;
-  font-size: 34px;
+  font-size: 35px;
   font-family: "Lato", sans-serif;
   font-weight: 400;
+  border-radius: 50px;
   margin-bottom: 13px;
-  text-align: center
-}
-
+  text-align: center;
+ 
 `
-const Button = styled.button`
-  color: blue;
-  width: 200px;
-  height: 90px;
-  display: flex;
-  top: 508px; 
+const Button = styled.button `
+  color:#000000;
+  width: 134px;
+  height: 37px;
+  border-radius:10px;
+  margin-top:50px;
+  top: 508px;
+  
   :hover {
-   background-color: #1877F2;
+   background: #1877F2;
   }
 `
