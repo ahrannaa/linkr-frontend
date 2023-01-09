@@ -288,13 +288,12 @@ h2 {
 }
 
 `
-const Button = styled.button `
-  color: blue,
-  width: 200px,
-  height: 90px,
-  display: flex,
-  top: 508px;
- 
+const Button = styled.button`
+  color: blue;
+  width: 200px;
+  height: 90px;
+  display: flex;
+  top: 508px; 
   :hover {
    background-color: #1877F2;
   }
