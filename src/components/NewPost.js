@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
 export default function NewPost({ dataPostReceived, setDataPostReceived }) {
-    const [formPost, setFormPost] = useState({ text: "", link: "" })
-    const [buttonClicked, setButtonClicked] = useState(false)
+    const [formPost, setFormPost] = useState({ text: "", link: "" });
+    const [buttonClicked, setButtonClicked] = useState(false);
 
     function handlePostForm(e) {
         const { name, value } = e.target
@@ -13,7 +13,7 @@ export default function NewPost({ dataPostReceived, setDataPostReceived }) {
 
     function sendPostData(e) {
         e.preventDefault()
-        /* const config = { headers: { "Authorization": `Bearer ${token}` } }  */
+        const config = { headers: { "Authorization": `Bearer ${user}` } }  
         const body = formPost
 
         axios.post("http://localhost:4000/posts", body)
@@ -30,6 +30,7 @@ export default function NewPost({ dataPostReceived, setDataPostReceived }) {
         sendPostData(e)
         setButtonClicked(true)
     }
+
 
     return (
         <NewPostCard>
