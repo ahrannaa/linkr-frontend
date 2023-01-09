@@ -7,8 +7,9 @@ import NewPost from "../components/NewPost.js";
 import GlobalStyle from "../GlobalStyle.js";
 import Hashtags from "../components/Hashtags.js";
 
-export default function TimelinePage() {
+export default function TimelinePage(props) {
   const [latestPosts, setLatestPosts] = useState([]);
+  const [infoHashtag, setInfoHashtag] = useState([])
   const [dataPostReceived, setDataPostReceived] = useState(false)
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function TimelinePage() {
     )
   }
 
+
   return (
     <>
       <TimelineBackground>
@@ -45,7 +47,7 @@ export default function TimelinePage() {
           )}
           </> 
         </TimelineContent>
-        <Hashtags />
+        <Hashtags infoHashtag={infoHashtag} setInfoHashtag={setInfoHashtag} />
       </TimelineBackground>
     </>
   );
