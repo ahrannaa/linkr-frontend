@@ -12,10 +12,10 @@ export default function TopBar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
+    if (!user.token) {
       return;
     }
-    const config = { headers: { Authorization: `Bearer ${user}` } };
+    const config = { headers: { Authorization: `Bearer ${user.token}` } };
     axios
       .get("http://localhost:4000/info/user", config)
       .then((res) => {
