@@ -9,7 +9,7 @@ import Hashtags from "../components/Hashtags.js";
 
 export default function TimelinePage() {
   const [latestPosts, setLatestPosts] = useState([]);
-
+  const [infoHashtag, setInfoHashtag] = useState([])
   return (
     <>
       <GlobalStyle />
@@ -21,7 +21,7 @@ export default function TimelinePage() {
           <Post />
           {/* {latestPosts.map((latestPost, index) => <Post key={index} latestPost={latestPost} />)} */}
         </TimelineContent>
-        <Hashtags />
+        <Hashtags infoHashtag={infoHashtag} setInfoHashtag={setInfoHashtag} />
       </TimelineBackground>
     </>
   );

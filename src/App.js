@@ -5,6 +5,7 @@ import SignInPage from "./pages/SignInPage.js";
 import GlobalStyle from "./GlobalStyle";
 import SignUpPage from "./pages/SignUpPage.js";
 import UserPage from "./pages/UserPage.js";
+import HashtagPage from "./pages/HashtagPage.js";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/user/:id" element={<UserPage />} />
+        <Route path="/hashtag/:hashtag" element = {<HashtagPage/>} />
       </Routes>
     </BrowserRouter>
   );
