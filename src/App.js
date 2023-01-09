@@ -14,6 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <GlobalStyle />
+      <AuthContext.Provider value={{ user, setUser }}>
       <Routes>
         <Route path="/timeline" element={<TimelinePage />} />
         <Route path="/" element={<SignInPage />} />
@@ -21,13 +22,6 @@ function App() {
         <Route path="/user/:id" element={<UserPage />} />
         <Route path="/hashtag/:hashtag" element = {<HashtagPage/>} />
       </Routes>
-      <AuthContext.Provider value={{ user, setUser }}>
-        <Routes>
-          <Route path="/timeline" element={<TimelinePage />} />
-          <Route path="/" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/user/:id" element={<UserPage />} />
-        </Routes>
       </AuthContext.Provider>
     </BrowserRouter>
   );
