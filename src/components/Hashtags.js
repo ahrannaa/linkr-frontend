@@ -34,6 +34,7 @@ export default function Hashtags(props) {
     
   }
 
+<<<<<<< HEAD
 
 
   return (
@@ -42,11 +43,13 @@ export default function Hashtags(props) {
       <Line />
       <HashtagList>
         {allHashtag.map((h) => {
+=======
+>>>>>>> main
           return (
             <Hashtag
-              onClick={() => {
+             onClick={() => {
                 openHashtag(h);
-              }}
+              }} 
             >
               #{h.hashtag}
             </Hashtag>
