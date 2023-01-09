@@ -20,7 +20,7 @@ export default function NewPost({ dataPostReceived, setDataPostReceived }) {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
         const body = formPost
 
-        axios.post("http://localhost:4000/posts", body, config)
+        axios.post("https://linkr-api-0l14.onrender.com/posts", body, config)
             .then(() => {
                 setDataPostReceived(true)
                 setButtonClicked(false)

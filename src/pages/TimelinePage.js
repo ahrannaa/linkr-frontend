@@ -13,7 +13,7 @@ export default function TimelinePage(props) {
   const [dataPostReceived, setDataPostReceived] = useState(false)
 
   useEffect(() => {
-     axios.get("http://localhost:4000/posts")
+     axios.get("https://linkr-api-0l14.onrender.com/posts")
       .then(res => {
          setLatestPosts(res.data)
         setDataPostReceived(false)
