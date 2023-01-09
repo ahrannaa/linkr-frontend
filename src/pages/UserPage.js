@@ -13,7 +13,7 @@ export default function UserPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/user/${id}`)
+      .get(`https://linkr-api-0l14.onrender.com/user/${id}`)
       .then((res) => {
         console.log(res.data)
         setPostsUser(res.data);
