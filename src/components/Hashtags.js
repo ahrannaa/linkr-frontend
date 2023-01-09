@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Hashtags(props) {
+
+  const { setInfoHashtag } = props;
   const [allHashtag, setAllHastag] = useState([]);
-  const { infoHashtag, setInfoHashtag } = props;
   const navigate = useNavigate();
 
   useEffect(function seachHashtag() {
@@ -33,6 +34,13 @@ export default function Hashtags(props) {
     
   }
 
+
+  return (
+    <HashtagsCard>
+      <Title> trending </Title>
+      <Line />
+      <HashtagList>
+        {allHashtag.map((h) => {
           return (
             <Hashtag
              onClick={() => {
