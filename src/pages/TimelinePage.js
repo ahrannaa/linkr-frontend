@@ -7,9 +7,9 @@ import NewPost from "../components/NewPost.js";
 import GlobalStyle from "../GlobalStyle.js";
 import Hashtags from "../components/Hashtags.js";
 
-export default function TimelinePage() {
+export default function TimelinePage(props) {
   const [latestPosts, setLatestPosts] = useState([]);
-  const [infoHashtag, setInfoHashtag] = useState([])
+  const [infoHashtag, setInfoHashtag] = useState([]);
   return (
     <>
       <GlobalStyle />

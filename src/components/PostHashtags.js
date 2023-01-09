@@ -3,7 +3,7 @@ import styled from "styled-components";
 export default function PostHashtags(props){
     const {allHashtags} = props
     return(<>
-        
+         
                 {allHashtags.map((h)=>{const {userName,picture,description,link}= h;
                 return(
                     <PostCard>
@@ -15,7 +15,7 @@ export default function PostHashtags(props){
                 <h3>{link}</h3>
                 </PostContent>
                 </PostCard>
-                )})}
+                )})} 
             
             </>
     )
