@@ -5,24 +5,22 @@ import styled from "styled-components";
 export default function Hashtags() {
   const [allHashtag, setAllHastag] = useState([]);
 
-  useEffect(
-   function seachHashtag() {
-      const promise = axios.get(`http://localhost:4000/hashtags`)
-      promise.then((response)=>  setAllHastag(response.data))
-      promise.catch((resposta)=>{
-        console.log("DEU RUIM",resposta )
-      })
-    }
-    ,[])
+  useEffect(function seachHashtag() {
+    const promise = axios.get(`http://localhost:4000/hashtags`);
+    promise.then((response) => setAllHastag(response.data));
+    promise.catch((resposta) => {
+      console.log("DEU RUIM", resposta);
+    });
+  }, []);
 
-//   function openHashtag(hashtag) {
-//     console.log(hashtag);
-//     const promise = axios.get(`http://localhost:2000/hashtags/${hashtag}`)
-//     promise.then((response)=>{console.log(response)})
-//     promise.catch((resposta)=>{
-//         console.log("DEU RUIM",resposta )
-//       })
-//   }
+  //   function openHashtag(hashtag) {
+  //     console.log(hashtag);
+  //     const promise = axios.get(`http://localhost:2000/hashtags/${hashtag}`)
+  //     promise.then((response)=>{console.log(response)})
+  //     promise.catch((resposta)=>{
+  //         console.log("DEU RUIM",resposta )
+  //       })
+  //   }
 
   return (
     <HashtagsCard>
@@ -30,12 +28,12 @@ export default function Hashtags() {
       <Line />
       <HashtagList>
         {allHashtag.map((h) => {
-            console.log(h)
+          console.log(h);
           return (
             <Hashtag
-              onClick={() => {
-                //openHashtag(h);
-              }}
+            /* onClick={() => {
+                openHashtag(h);
+              }} */
             >
               #{h.hashtag}
             </Hashtag>
