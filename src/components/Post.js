@@ -3,8 +3,9 @@ import { useState, useContext } from "react";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../auth";
+import { ReactTagify } from "react-tagify";
 
 
 export default function Post({ latestPost }) {
@@ -16,6 +17,7 @@ export default function Post({ latestPost }) {
   const [like, setLike] = useState(false);
   const [ heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
 
    function fillHeart() {
@@ -124,6 +126,11 @@ export default function Post({ latestPost }) {
     window.open(link, "_blank");
   }
 
+  const tagDisplay ={
+    color: "white",
+    fontWeight: 700,
+  }
+
   return (
     <>
       <PostCard>
@@ -168,7 +175,7 @@ export default function Post({ latestPost }) {
             </IonIcon>
             }
           </Header>
-          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<h3>{latestPost.text}</h3>}
+          { isEditing ? <Input onChange={e => setEditInput(e.target.value)} autoFocus defaultValue={editInput}/> :<ReactTagify tagStyle={tagDisplay} tagClicked={(t)=>{navigate(`/hashtag/${t.replace("#","")}`)}} ><h3>{latestPost.text}</h3></ReactTagify>}
              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
                     <LinkInfo>
                       <h2>{latestPost.title}</h2>
