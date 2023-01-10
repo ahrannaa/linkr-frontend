@@ -39,7 +39,7 @@ export default function UserPage() {
         <UserPageStyle>
           <div>
             <img src={postsUser[0].picture} alt="avatar user" />
-            <h1>{postsUser[0].userName} posts</h1>
+            <h1>{postsUser[0].name} posts</h1>
           </div>
           {postsUser.map((post, index) => <Post key={index} latestPost={post} />)}
         </UserPageStyle>
@@ -57,7 +57,7 @@ const TimelineBackground = styled.body`
 `;
 
 const UserPageStyle = styled.div`
-  margin-top: 120px;
+  margin-top: 95px;
   width: 650px;
   height: 100%;
   background-color: #171717;

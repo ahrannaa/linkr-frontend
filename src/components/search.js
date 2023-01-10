@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import SearchIcon from "../assets/img/Vector.svg";
+import { FaSearch } from "react-icons/fa";
 
 export default function Search() {
   const [result, setResult] = useState([]);
   const [name, setName] = useState();
+  const [inputOf, setInputOf] = useState();
 
   useEffect(() => {
     if (name?.length > 2) {
@@ -24,6 +25,11 @@ export default function Search() {
     }
   }, [name]);
 
+  function toggleInput(resp) {
+    setTimeout(setInputOf, 200, resp);
+    
+  }
+
   return (
     <StyleSearch>
       <DebounceInput
@@ -31,22 +37,22 @@ export default function Search() {
         name="userName"
         minLength={0}
         debounceTimeout={300}
-        autoComplete="false"
+        autoComplete="off"
+        onBlur={(e) => toggleInput(true)}
+        onFocus={(e) => toggleInput(false)}
         value={name}
-        onChange={(event) => setName(event.target.value)}
+        onChange={(e) => setName(e.target.value)}
         placeholder="Search for people"
       />
-      <button>
-        <img src={SearchIcon} alt="search-icon" />
-      </button>
+      <div>
+        <FaSearch size="21" color="#C6C6C6" />
+      </div>
+
       {result?.map((user) => (
-        <Link to={`/user/${user.id}`}>
+        <Link to={`/user/${user.id}`} key={user.id}>
           <ResultStyle
-            key={user.id}
-            onClick={() => {
-              setResult([]);
-              setName([]);
-            }}
+            onClick={ () => setName("")}
+            visible={inputOf}
           >
             <img src={user.picture} alt="avatar user" />
             <span>{user.userName}</span>
@@ -63,6 +69,7 @@ const StyleSearch = styled.div`
   position: absolute;
   left: 35%;
   top: 13px;
+
   a {
     text-decoration: none;
   }
@@ -79,20 +86,21 @@ const StyleSearch = styled.div`
     }
   }
 
-  button {
+  div {
     position: absolute;
     right: 14px;
     top: 13px;
-    background-color: #fff;
+    background-color: initial;
     border: none;
   }
 `;
 
-const ResultStyle = styled.div`
-  display: flex;
+const ResultStyle = styled.li`
+  display: ${(props) => (props.visible ? "none" : "flex")};
   align-items: center;
-  margin: 16px;
+  padding: 16px;
   cursor: pointer;
+  border-radius: 0px 0px 8px 8px;
 
   img {
     width: 39px;
@@ -106,5 +114,9 @@ const ResultStyle = styled.div`
     font-family: "Lato", sans-serif;
     font-weight: 400;
     color: #515151;
+  }
+
+  &:hover {
+    background-color: #a7a7a7;
   }
 `;
