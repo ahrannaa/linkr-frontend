@@ -11,18 +11,26 @@ export default function TopBar() {
   const [displayButton, setDisplayButton] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (!user.token) {
       return;
     }
-    const config = { headers: { Authorization: `Bearer ${user.token}` } };
-    axios
-      .get("https://linkr-api-0l14.onrender.com/info/user", config)
-      .then((res) => {
-        setInfosUser(res.data);
-      })
-      .catch((res) => alert(res.data));
-  }, [user]);
+    const getPicture = async () => {
+      try {
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+        await axios
+          .get("https://linkr-api-0l14.onrender.com/info/user", config)
+          .then((res) => {
+            console.log(res.data);
+            setInfosUser(res.data);
+          })
+          .catch((res) => alert(res.data));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getPicture();
+  }, [user]); */
 
   function Logout() {
     setUser(null);
@@ -34,12 +42,12 @@ export default function TopBar() {
       <h1>linkr</h1>
       <Search />
 
-      <UserDiv infosUser={infosUser}>
+      <UserDiv infosUser={user}>
         <ion-icon
           name={displayButton ? "chevron-up-outline" : "chevron-down-outline"}
           onClick={() => setDisplayButton(!displayButton)}
         ></ion-icon>
-        {/* <img src={infosUser[0].picture} /> */}
+        <img src={user.picture} />
         <LogoutButton displayButton={displayButton} onClick={Logout}>
           <h2>Logout</h2>
         </LogoutButton>

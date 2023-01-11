@@ -7,6 +7,7 @@ import AuthContext from "./auth.js";
 import { useLocalStorage } from "./useLocalStorage.js";
 import UserPage from "./pages/UserPage.js";
 import HashtagPage from "./pages/HashtagPage.js";
+import TopBar from "./components/TopBar.js";
 
 function App() {
   const [user, setUser] = useLocalStorage("user", null);
@@ -15,13 +16,13 @@ function App() {
     <BrowserRouter>
       <GlobalStyle />
       <AuthContext.Provider value={{ user, setUser }}>
-      <Routes>
-        <Route path="/timeline" element={<TimelinePage />} />
-        <Route path="/" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/user/:id" element={<UserPage />} />
-        <Route path="/hashtag/:hashtag" element = {<HashtagPage/>} />
-      </Routes>
+        <Routes>
+          <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/user/:id" element={<UserPage />} />
+          <Route path="/hashtag/:hashtag" element={<HashtagPage />} />
+        </Routes>
       </AuthContext.Provider>
     </BrowserRouter>
   );
