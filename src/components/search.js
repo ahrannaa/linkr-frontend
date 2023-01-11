@@ -4,6 +4,7 @@ import { DebounceInput } from "react-debounce-input";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
+import { URL_BASE } from "../constants/UrlBase";
 
 export default function Search() {
   const [result, setResult] = useState([]);
@@ -13,7 +14,7 @@ export default function Search() {
   useEffect(() => {
     if (name?.length > 2) {
       axios
-        .get(`https://linkr-api-0l14.onrender.com/search/${name}`)
+        .get(`${URL_BASE}/search/${name}`)
         .then((res) => {
           setResult(res.data);
         })
