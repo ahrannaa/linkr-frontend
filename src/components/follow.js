@@ -8,12 +8,16 @@ export default function Follow({ userId }) {
   const [follower, setFollower] = useState(false);
   const { user } = useContext(AuthContext);
   const [myPage, setMyPage] = useState(false);
+  const [load, setLoad] = useState(true);
 
   const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
   useEffect(() => {
-
-    if (user.id === parseInt(userId)) setMyPage(!myPage);
+    if (user.id === parseInt(userId)) {
+      setMyPage(true);
+    } else {
+      setMyPage(false);
+    }
 
     axios
       .get(`${URL_BASE}/following`, config)
@@ -21,6 +25,7 @@ export default function Follow({ userId }) {
         res.data.filter((id) => id.followId === parseInt(userId)).length
           ? setFollower(true)
           : setFollower(false);
+        setTimeout(setLoad, 500, false);
       })
       .catch((res) => {
         console.log(res);
@@ -28,20 +33,28 @@ export default function Follow({ userId }) {
   }, [userId]);
 
   function toggleFollower() {
-    setFollower(!follower);
-    
+    setLoad(true);
+
     axios
       .post(`http://localhost:4000/follow/${userId}`, {}, config)
       .then((res) => {
         console.log(res.data);
+        setTimeout(setLoad, 500, false);
+        setFollower(!follower);
       })
       .catch((res) => {
+        alert("Não foi possivel sequir esse usuario!");
         console.log(res);
       });
   }
 
   return (
-    <ButtonStyle onClick={toggleFollower} follower={follower} myPage={myPage}>
+    <ButtonStyle
+      onClick={toggleFollower}
+      follower={follower}
+      myPage={myPage}
+      disabled={load ? true : false}
+    >
       {follower ? "Unfollow" : "Follow"}
     </ButtonStyle>
   );
@@ -60,4 +73,13 @@ const ButtonStyle = styled.button`
   position: absolute;
   margin-left: 800px;
   display: ${(props) => (props.myPage ? "none" : "initial")};
+
+  > &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    background-color: #a9a9a9;
+    cursor: none;
+  }
 `;
