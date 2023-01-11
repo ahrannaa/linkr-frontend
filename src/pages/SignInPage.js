@@ -14,10 +14,11 @@ export default function SignInPage() {
     axios
       .post("https://linkr-api-0l14.onrender.com/signin", format)
       .then((res) => {
+        console.log(res.data);
         setUser(res.data);
         navigate("/timeline");
       })
-      .catch((res) => alert(res));
+      .catch((res) => alert(res.data));
   }
 
   function register(e) {
