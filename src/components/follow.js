@@ -11,10 +11,9 @@ export default function Follow({ userId }) {
 
   const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-  console.log(userId);
-
   useEffect(() => {
-    // if (user.id === userId) setMyPage(true);
+
+    if (user.id === parseInt(userId)) setMyPage(!myPage);
 
     axios
       .get(`${URL_BASE}/following`, config)
@@ -26,11 +25,11 @@ export default function Follow({ userId }) {
       .catch((res) => {
         console.log(res);
       });
-  }, []);
+  }, [userId]);
 
   function toggleFollower() {
     setFollower(!follower);
-    const config = { headers: { Authorization: `Bearer ${user.token}` } };
+    
     axios
       .post(`http://localhost:4000/follow/${userId}`, {}, config)
       .then((res) => {
