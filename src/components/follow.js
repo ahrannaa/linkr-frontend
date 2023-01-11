@@ -36,7 +36,7 @@ export default function Follow({ userId }) {
     setLoad(true);
 
     axios
-      .post(`http://localhost:4000/follow/${userId}`, {}, config)
+      .post(`${URL_BASE}/follow/${userId}`, {}, config)
       .then((res) => {
         console.log(res.data);
         setTimeout(setLoad, 500, false);
