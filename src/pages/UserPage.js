@@ -1,48 +1,61 @@
 import styled from "styled-components";
 import TopBar from "../components/TopBar.js";
 import Post from "../components/Post.js";
-import GlobalStyle from "../GlobalStyle.js";
 import Hashtags from "../components/Hashtags.js";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { RotatingLines } from "react-loader-spinner";
+import Follow from "../components/follow.js";
+import { URL_BASE } from "../constants/UrlBase.js";
 
 export default function UserPage() {
-  const [postsUser, setPostsUser] = useState();
+  const [posts, setPosts] = useState();
+  const [user, setUser] = useState()
   const { id } = useParams();
 
   useEffect(() => {
     axios
-      .get(`https://linkr-api-0l14.onrender.com/user/${id}`)
+      .get(`${URL_BASE}/user/${id}`)
       .then((res) => {
-        console.log(res.data)
-        setPostsUser(res.data);
+        console.log(res.data);
+        setUser(res.data.user)
+        setPosts(res.data.posts);
       })
       .catch((res) => {
         console.log(res);
       });
   }, [id]);
 
-  if (!postsUser){
-    return(
-      <UserPageStyle>
-        <h1>Loading...</h1>
-      </UserPageStyle>
-    )
-  }
+  
 
   return (
     <>
-      <GlobalStyle />
       <TimelineBackground>
         <TopBar />
-        <UserPageStyle>
-          <div>
-            <img src={postsUser[0].picture} alt="avatar user" />
-            <h1>{postsUser[0].name} posts</h1>
-          </div>
-          {postsUser.map((post, index) => <Post key={index} latestPost={post} />)}
-        </UserPageStyle>
+        {user ? (
+          <UserPageStyle>
+            <div>
+              <img src={user[0].picture} alt="avatar user" />
+              <h1>{user[0].name} posts</h1>
+              <Follow userId={id}></Follow>
+            </div>
+            {posts.map((post, index) => (
+              <Post key={index} latestPost={post} />
+            ))}
+          </UserPageStyle>
+        ) : (
+          <RotatinL>
+            <RotatingLines
+              strokeColor="grey"
+              strokeWidth="5"
+              animationDuration="0.75"
+              width="95"
+              visible={true}
+            />
+          </RotatinL>
+        )}
+
         <Hashtags />
       </TimelineBackground>
     </>
@@ -61,12 +74,14 @@ const UserPageStyle = styled.div`
   width: 650px;
   height: 100%;
   background-color: #171717;
+  margin: auto;
 
   > div:first-child {
     display: flex;
     margin-bottom: 30px;
     align-items: center;
     justify-content: baseline;
+    margin-top:100px;
 
     > img {
       width: 50px;
@@ -82,4 +97,10 @@ const UserPageStyle = styled.div`
       margin-bottom: 5px;
     }
   }
+`;
+
+const RotatinL = styled.div`
+  background-color: #171717;
+  margin: 10% auto 0 auto;
+  text-align: center;
 `;

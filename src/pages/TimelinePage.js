@@ -4,7 +4,6 @@ import styled from "styled-components";
 import TopBar from "../components/TopBar.js";
 import Post from "../components/Post.js";
 import NewPost from "../components/NewPost.js";
-import GlobalStyle from "../GlobalStyle.js";
 import Hashtags from "../components/Hashtags.js";
 
 export default function TimelinePage(props) {
