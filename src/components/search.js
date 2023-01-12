@@ -1,20 +1,26 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { URL_BASE } from "../constants/UrlBase";
+import AuthContext from "../auth";
 
 export default function Search() {
   const [result, setResult] = useState([]);
   const [name, setName] = useState();
   const [inputOf, setInputOf] = useState();
+  const { user } = useContext(AuthContext);
+  const [following, setFollowing] = useState();
 
   useEffect(() => {
+
+    const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
     if (name?.length > 2) {
       axios
-        .get(`${URL_BASE}/search/${name}`)
+        .get(`${URL_BASE}/search/${name}`, config)
         .then((res) => {
           setResult(res.data);
         })
@@ -26,9 +32,30 @@ export default function Search() {
     }
   }, [name]);
 
+  useEffect(() => {
+
+    const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
+    axios
+      .get(`${URL_BASE}/following`, config)
+      .then((res) => {
+        setFollowing(
+          result
+            ?.map((user) =>
+              res.data.filter((fol) => fol.followId === user.id).length
+                ? { ...user, following: true }
+                : { ...user, following: false }
+            )
+            .sort((a, b) => b.following - a.following)
+        );
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  }, [result]);
+
   function toggleInput(resp) {
     setTimeout(setInputOf, 200, resp);
-    
   }
 
   return (
@@ -49,14 +76,17 @@ export default function Search() {
         <FaSearch size="21" color="#C6C6C6" />
       </div>
 
-      {result?.map((user) => (
+      {following?.map((user) => (
         <Link to={`/user/${user.id}`} key={user.id}>
           <ResultStyle
-            onClick={ () => setName("")}
+            onClick={() => setName("")}
             visible={inputOf}
+            following={user.following}
           >
             <img src={user.picture} alt="avatar user" />
-            <span>{user.userName}</span>
+            <span>
+              {user.userName} <p>• following</p>
+            </span>
           </ResultStyle>
         </Link>
       ))}
@@ -115,6 +145,13 @@ const ResultStyle = styled.li`
     font-family: "Lato", sans-serif;
     font-weight: 400;
     color: #515151;
+
+    > p {
+      margin-left: 7px;
+      display: inline;
+      color: #c5c5c5;
+      display: ${(props) => (props.following ? "inline" : "none")};
+    }
   }
 
   &:hover {

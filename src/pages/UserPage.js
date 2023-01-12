@@ -18,7 +18,6 @@ export default function UserPage() {
     axios
       .get(`${URL_BASE}/user/${id}`)
       .then((res) => {
-        console.log(res.data);
         setUser(res.data.user)
         setPosts(res.data.posts);
       })
