@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../auth";
 import { ReactTagify } from "react-tagify";
+import Comments from "./Comments";
 
 export default function Post({ latestPost }) {
   let subtitle;
@@ -13,6 +14,8 @@ export default function Post({ latestPost }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [editInput, setEditInput] = useState(latestPost.text);
+  const [comments, setComments] = useState([]);
+  const [enableComments, setEnableComments] = useState(false);
   const [like, setLike] = useState(false);
   const [heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
@@ -29,7 +32,17 @@ export default function Post({ latestPost }) {
       heartClass = "heart";
     }
     setheartIcon(heartClass);
-  }
+}
+function openComments() {
+  axios
+  .get(`https://linkr-api-0l14.onrender.com/comments${latestPost.id}`)
+  .then((res) => {
+    setComments(res.data)
+    setEnableComments(true);
+  }).catch((err) => {
+    alert(err.message);
+  });
+}
 
   const customStyles = {
     content: {
@@ -133,6 +146,7 @@ export default function Post({ latestPost }) {
         <div>
           <img src={latestPost.picture} />
           <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+          <ion-icon onClick ={openComments} name="chatbubbles-outline"></ion-icon>
         </div>
         <PostContent>
           <Header>
@@ -200,6 +214,10 @@ export default function Post({ latestPost }) {
           </LinkDisplayer>
         </PostContent>
       </PostCard>
+      { enableComments &&
+        comments.map((comment, index) => (
+         <Comments key={index} comment={comment}/>))
+      }
     </>
   );
 }
@@ -207,9 +225,9 @@ export default function Post({ latestPost }) {
 const PostCard = styled.div`
   width: 611px;
   background-color: #000000;
+  margin-bottom:16px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
-  margin-bottom: 16px;
   padding: 16px;
   display: flex;
   img {
@@ -220,7 +238,7 @@ const PostCard = styled.div`
 
   ion-icon {
     font-size: 19px;
-    color: red;
+    color: white;
     margin-left: 17px;
     margin-top: 20px;
   }
@@ -274,7 +292,7 @@ const LinkDisplayer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  overflow: hidden;
+  overflow: hidden; 
   img {
     width: 154px;
     height: 154px;
