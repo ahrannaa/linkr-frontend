@@ -16,7 +16,7 @@ export default function HashtagPage() {
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
-  };
+  };console.log(user.token)
   useEffect(() => {
     const promise = axios.get(`https://linkr-api-0l14.onrender.com/post/${hashtag}`,config);
     promise.then((response) => {

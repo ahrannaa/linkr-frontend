@@ -14,6 +14,7 @@ export default function Hashtags(props) {
       Authorization: `Bearer ${user.token}`,
     },
   };
+  console.log(user.token)
   useEffect(function seachHashtag() {
     const promise = axios.get(`https://linkr-api-0l14.onrender.com/hashtags`,config);
     promise.then((response) => setAllHastag(response.data));
@@ -23,11 +24,12 @@ export default function Hashtags(props) {
   }, []);
 
   function openHashtag(hashtag) {
+    console.log(hashtag.hashtag)
     const promise = axios.get(
-      `https://linkr-api-0l14.onrender.com/hashtags/${hashtag.hashtag},`,config
-    );
+      `https://linkr-api-0l14.onrender.com/hashtags/${hashtag.hashtag}`,config);
 
     promise.then((response) => {
+      console.log(response.data)
       setInfoHashtag(response.data)
       navigate(`/hashtag/${response.data.hashtag}`)
     });
