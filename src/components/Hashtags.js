@@ -1,16 +1,21 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import AuthContext from "../auth";
 
 export default function Hashtags(props) {
-
+  const { user } = useContext(AuthContext);
   const { setInfoHashtag } = props;
   const [allHashtag, setAllHastag] = useState([]);
   const navigate = useNavigate();
-
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
   useEffect(function seachHashtag() {
-    const promise = axios.get(`http://localhost:4000/hashtags`);
+    const promise = axios.get(`https://linkr-api-0l14.onrender.com/hashtags`,config);
     promise.then((response) => setAllHastag(response.data));
     promise.catch((resposta) => {
       console.log("DEU RUIM", resposta);
@@ -19,7 +24,7 @@ export default function Hashtags(props) {
 
   function openHashtag(hashtag) {
     const promise = axios.get(
-      `http://localhost:4000/hashtags/${hashtag.hashtag}`
+      `https://linkr-api-0l14.onrender.com/hashtags/${hashtag.hashtag},`,config
     );
 
     promise.then((response) => {
