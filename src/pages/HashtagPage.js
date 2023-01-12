@@ -1,16 +1,24 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Hashtags from "../components/Hashtags.js";
 import PostHashtags from "../components/PostHashtags.js";
 import TopBar from "../components/TopBar.js";
+import AuthContext from "../auth";
+
 export default function HashtagPage() {
+  const { user } = useContext(AuthContext);
   const [allHashtags, setAllHashags]= useState([]);
   const [infoHashtag, setInfoHashtag] = useState([]);
   const { hashtag } = useParams();
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
   useEffect(() => {
-    const promise = axios.get(`http://localhost:4000/post/${hashtag}`);
+    const promise = axios.get(`https://linkr-api-0l14.onrender.com/post/${hashtag}`,config);
     promise.then((response) => {
       setAllHashags(response.data);
     });
