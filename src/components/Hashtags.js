@@ -14,7 +14,6 @@ export default function Hashtags(props) {
       Authorization: `Bearer ${user.token}`,
     },
   };
-  console.log(user.token)
   useEffect(function seachHashtag() {
     const promise = axios.get(`https://linkr-api-0l14.onrender.com/hashtags`,config);
     promise.then((response) => setAllHastag(response.data));
