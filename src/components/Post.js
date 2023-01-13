@@ -41,9 +41,8 @@ export default function Post({ latestPost }) {
 }
 
  async function openComments() {
-  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
-  
-   try {
+  const URL = `https://linkr-frontend-two.vercel.app/posts/${latestPost.id}/comments`
+  try {
      const response = await axios.get(URL)
      setComments(response.data)
      setEnableComments(true);
@@ -57,10 +56,16 @@ export default function Post({ latestPost }) {
   e.preventDefault()
   const body = newComment
 
-  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+  const URL = `https://linkr-frontend-two.vercel.app/posts/${latestPost.id}/comments`
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
 
   try {
-     await axios.post(URL, body)
+     await axios.post(URL, body, config)
      setcountComments(countComments + 1)
   
     } catch(err) {
@@ -254,6 +259,7 @@ function closeModal() {
             followerPic={comment.picture}
             followerName={comment.userName}
             text={comment.comment}
+            userId={comment.userId}
             />
           ))
         }
