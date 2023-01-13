@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
@@ -15,7 +15,6 @@ export default function Post({ latestPost }) {
   const [isEditing, setEditing] = useState(false);
   const [editInput, setEditInput] = useState(latestPost.text);
   const [newComment, setNewComment] = useState("");
-  const [countComments, setcountComments] = useState(0);
   const [comments, setComments] = useState([]);
   const [enableComments, setEnableComments] = useState(false);
   const [like, setLike] = useState(false);
@@ -23,6 +22,15 @@ export default function Post({ latestPost }) {
   const [heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("teste")
+    console.log(latestPost.id)
+    const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+    axios.get(URL)
+      .then((response) => setComments(response.data))
+      .catch((err) => alert(err.message))
+  }, [latestPost.id]);
 
   function fillHeart() {
     let heartClass = heartIcon;
@@ -40,33 +48,40 @@ export default function Post({ latestPost }) {
     setcountLike(countLike)
   }
 
-  async function openComments() {
-    const URL = `http://localhost:4000/posts/${latestPost.id}/comments`
+async function getComments() {
+  const URL = `https://linkr-api-0l14.onrender.com/${latestPost.id}/comments`
+  try {
+     const response = await axios.get(URL)
+     console.log("dataa")
+     console.log("dataa")
+     setComments(response.data)
+   } catch(err) {
+     alert(err.message);
+   }
+}
 
-    try {
-      const response = await axios.get(URL)
-      setComments(response.data)
-      setEnableComments(true);
+ async function openComments() {
+  setEnableComments(true);
+}
 
-    } catch (err) {
-      alert(err.message);
-    }
+ async function sendComment(e){
+  e.preventDefault()
+  const body = { comment: newComment }
+
+    const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
+  try {
+     await axios.post(URL, body, config)
+     setComments((oldComments) => [...oldComments, newComment])
+    } catch(err) {
+    alert(err.message);
   }
-
-  async function sendComment(e) {
-    e.preventDefault()
-    const body = newComment
-
-    const URL = `http://localhost:4000/posts/posts/${latestPost.id}/comments`
-
-    try {
-      await axios.post(URL, body)
-      setcountComments(countComments + 1)
-
-    } catch (err) {
-      alert(err.message);
-    }
-  }
+}
 
   const customStyles = {
     content: {
@@ -86,7 +101,7 @@ export default function Post({ latestPost }) {
   async function deletePost() {
     setIsLoading(true);
 
-    const URL = `http://localhost:4000/posts/${latestPost.id}`;
+    const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}`;
 
     const config = {
       headers: {
@@ -128,7 +143,7 @@ export default function Post({ latestPost }) {
   }
 
   async function editPost() {
-    const URL = `http://localhost:4000/posts/${latestPost.id}`;
+    const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}`;
 
     const body = {
       description: editInput,
@@ -171,7 +186,7 @@ export default function Post({ latestPost }) {
     if (window.confirm("Do you want to re-post this link?") === true) {
 
       try {
-        await axios.post(`http://localhost:4000/posts/${id}`, body, config);
+        await axios.post(`https://linkr-api-0l14.onrender.com/posts/${id}`, body, config);
         window.location.reload(true);
       } catch (err) {
         console.log(err);
@@ -231,9 +246,6 @@ export default function Post({ latestPost }) {
                 <h3>{countLike} likes</h3>
               }
               <ion-icon onClick={openComments} name="chatbubbles-outline"></ion-icon>
-              {countComments > 0 &&
-                <h4>{countComments} comments</h4>
-              }
               <ShareCounter>
                 <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.id)}></ion-icon>
                 <h5>{latestPost.repostCount} re-post</h5>

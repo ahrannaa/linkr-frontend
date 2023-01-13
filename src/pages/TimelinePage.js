@@ -16,14 +16,13 @@ export default function TimelinePage(props) {
   const [newTimeLineSize, setNewTimeLineSize] = useState();
   const [timelinesDiferences, setTimelineDiferences] = useState(0);
   const [timelineSize, setTimelineSize] = useState();
-  const localhost1 = "http://localhost:4000/";
   const db1 = "https://linkr-api-0l14.onrender.com/";
   let offset = 0;
   let cont = 0;
 
   function refreshPosts() {
     axios
-      .get(`${localhost1}posts?limit=5&offset=${offset}`)
+      .get(`${db1}posts?limit=5&offset=${offset}`)
       .then((res) => {
         const newPosts = [];
         res.data.forEach((e) => newPosts.push(e));
@@ -70,7 +69,7 @@ export default function TimelinePage(props) {
   }, 15000);
 
   function testTimeline() {
-    axios.get(`${localhost1}posts`).then((res) => {
+    axios.get(`${db1}posts`).then((res) => {
       setNewTimeLineSize(res.data.length);
     });
     if (newTimeLineSize < timelineSize) {
