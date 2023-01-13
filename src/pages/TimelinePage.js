@@ -16,7 +16,6 @@ export default function TimelinePage(props) {
   const [newTimeLineSize, setNewTimeLineSize] = useState();
   const [timelinesDiferences, setTimelineDiferences] = useState(0);
   const [timelineSize, setTimelineSize] = useState();
-  const localhost1 = "http://localhost:4000/";
   const db1 = "https://linkr-api-0l14.onrender.com/";
   let offset = 0;
   let cont = 0;
@@ -70,7 +69,7 @@ export default function TimelinePage(props) {
   }, 15000);
 
   function testTimeline() {
-    axios.get(`${localhost1}posts`).then((res) => {
+    axios.get(`${db1}posts`).then((res) => {
       setNewTimeLineSize(res.data.length);
     });
     if (newTimeLineSize < timelineSize) {
@@ -115,10 +114,7 @@ export default function TimelinePage(props) {
               <h1>There are no posts yet</h1>
             ) : (
               <>
-                {" "}
-                {latestPosts.map((latestPost, index) => (
-                  <Post key={index} latestPost={latestPost} />
-                ))}
+                {latestPosts.map((latestPost, index) =>  <Post key={index} latestPost={latestPost} />)}
               </>
             )}
           </>

@@ -46,7 +46,7 @@ export default function Post({ latestPost }) {
     }
     setheartIcon(heartClass);
     setcountLike(countLike)
-}
+  }
 
 async function getComments(postId) {
   const URL = `https://linkr-api-0l14.onrender.com/posts/${postId}/comments`
@@ -66,7 +66,7 @@ async function getComments(postId) {
   e.preventDefault()
   const body = { comment: newComment }
 
-  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+    const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
 
   const config = {
     headers: {
@@ -82,7 +82,7 @@ async function getComments(postId) {
   }
 }
 
- const customStyles = {
+  const customStyles = {
     content: {
       width: "597px",
       height: "262px",
@@ -97,7 +97,7 @@ async function getComments(postId) {
     },
   };
 
-async function deletePost() {
+  async function deletePost() {
     setIsLoading(true);
 
     const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}`;
@@ -125,11 +125,11 @@ async function deletePost() {
     }, 3000);
   }
 
-function openModal() {
+  function openModal() {
     setIsOpen(true);
   }
 
-function closeModal() {
+  function closeModal() {
     setIsOpen(false);
   }
 
@@ -179,108 +179,167 @@ function closeModal() {
     fontWeight: 700,
   };
 
+  async function sharePost(id) {
+    const body = null
+    const config = { headers: { Authorization: `Bearer ${user.token}` } };
+    if (window.confirm("Do you want to re-post this link?") === true) {
+
+      try {
+        await axios.post(`https://linkr-api-0l14.onrender.com/posts/${id}`, body, config);
+        window.location.reload(true);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
   return (
     <>
-      <PostCard>
-        <div>
-          <img src={latestPost.picture} />
-          <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
-          {countLike > 0 && 
-           <h3>{countLike} likes</h3>
-          }
-          <ion-icon onClick ={openComments} name="chatbubbles-outline"></ion-icon>
-           <h4>{comments.length} comments</h4>
-        </div>
-        <PostContent>
-          <Header>
-            <Link to={`/user/${latestPost.userId}`}>
-              <h2>{latestPost.name}</h2>
-            </Link>
-            {user.id === latestPost.userId && (
-              <IonIcon>
-                <ion-icon
-                  onClick={handleEditButton}
-                  name="pencil-outline"
-                ></ion-icon>
-                <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
-                <Modal
-                  isOpen={modalIsOpen}
-                  onAfterOpen={afterOpenModal}
-                  onRequestClose={closeModal}
-                  style={customStyles}
-                  contentLabel="Example Modal"
+      {latestPost.isrepost ? (
+        <RepostDisplay>
+          <RepostByDiv>
+            <ion-icon name="repeat-sharp"></ion-icon>
+            <h4>Re-posted by {latestPost.name === latestPost.reposter ? ("you") : (latestPost.reposter)}</h4>
+          </RepostByDiv>
+          <RepostCard>
+            <div>
+              <img src={latestPost.picture} />
+              <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+              <ion-icon name="chatbubbles-outline"></ion-icon>
+              <ShareCounter>
+                <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.originalPostId)}></ion-icon>
+                <h5>{latestPost.repostCount} re-post</h5>
+              </ShareCounter>
+            </div>
+            <PostContent>
+              <Header>
+                <Link to={`/user/${latestPost.userId}`}>
+                  <h2>{latestPost.name}</h2>
+                </Link>
+              </Header>
+              <ReactTagify
+                tagStyle={tagDisplay}
+                tagClicked={(t) => {
+                  navigate(`/hashtag/${t.replace("#", "")}`);
+                }}
+              >
+                <h3>{latestPost.text}</h3>
+              </ReactTagify>
+              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
+                <LinkInfo>
+                  <h2>{latestPost.title}</h2>
+                  <h3>{latestPost.preview}</h3>
+                  <h4>{latestPost.link}</h4>
+                </LinkInfo>
+                <img src={latestPost.pic} />
+              </LinkDisplayer>
+            </PostContent>
+          </RepostCard>
+        </RepostDisplay>
+      ) : (
+        <>
+          <PostCard>
+            <div>
+              <img src={latestPost.picture} />
+              <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+              {countLike > 0 &&
+                <h3>{countLike} likes</h3>
+              }
+              <ion-icon onClick={openComments} name="chatbubbles-outline"></ion-icon>
+              <h4>{comments.length} comments</h4>
+              <ShareCounter>
+                <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.id)}></ion-icon>
+                <h5>{latestPost.repostCount} re-post</h5>
+              </ShareCounter>
+            </div>
+            <PostContent>
+              <Header>
+                <Link to={`/user/${latestPost.userId}`}>
+                  <h2>{latestPost.name}</h2>
+                </Link>
+                {user.id === latestPost.userId && (
+                  <IonIcon>
+                    <ion-icon
+                      onClick={handleEditButton}
+                      name="pencil-outline"
+                    ></ion-icon>
+                    <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
+                    <Modal
+                      isOpen={modalIsOpen}
+                      onAfterOpen={afterOpenModal}
+                      onRequestClose={closeModal}
+                      style={customStyles}
+                      contentLabel="Example Modal"
+                    >
+                      {isLoading ? (
+                        <ColorRing
+                          type="ThreeDots"
+                          color="#4fa94d"
+                          height={150}
+                          width={150}
+                          ariaLabel="blocks-loading"
+                        />
+                      ) : (
+                        <Box>
+                          <h2 ref={(_subtitle) => (subtitle = _subtitle)}>
+                            Are you sure you want to delete this post?
+                          </h2>
+                          <Button onClick={closeModal}>No,go back</Button>
+                          <Button onClick={deletePost}>Yes,delete it</Button>
+                        </Box>
+                      )}
+                    </Modal>
+                  </IonIcon>
+                )}
+              </Header>
+              {isEditing ? (
+                <Input
+                  onChange={(e) => setEditInput(e.target.value)}
+                  autoFocus
+                  defaultValue={editInput}
+                />
+              ) : (
+                <ReactTagify
+                  tagStyle={tagDisplay}
+                  tagClicked={(t) => {
+                    navigate(`/hashtag/${t.replace("#", "")}`);
+                  }}
                 >
-                  {isLoading ? (
-                    <ColorRing
-                      type="ThreeDots"
-                      color="#4fa94d"
-                      height={150}
-                      width={150}
-                      ariaLabel="blocks-loading"
-                    />
-                  ) : (
-                    <Box>
-                      <h2 ref={(_subtitle) => (subtitle = _subtitle)}>
-                        Are you sure you want to delete this post?
-                      </h2>
-                      <Button onClick={closeModal}>No,go back</Button>
-                      <Button onClick={deletePost}>Yes,delete it</Button>
-                    </Box>
-                  )}
-                </Modal>
-              </IonIcon>
-            )}
-          </Header>
-          {isEditing ? (
-            <Input
-              onChange={(e) => setEditInput(e.target.value)}
-              autoFocus
-              defaultValue={editInput}
-            />
-          ) : (
-            <ReactTagify
-              tagStyle={tagDisplay}
-              tagClicked={(t) => {
-                navigate(`/hashtag/${t.replace("#", "")}`);
-              }}
-            >
-              <h3>{latestPost.text}</h3>
-            </ReactTagify>
-          )}
-          <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
-            <LinkInfo>
-              <h2>{latestPost.title}</h2>
-              <h3>{latestPost.preview}</h3>
-              <h4>{latestPost.link}</h4>
-            </LinkInfo>
-            <img src={latestPost.pic} />
-          </LinkDisplayer>
-        </PostContent>
-      </PostCard>
-      { enableComments &&
-       <ContainerComments>
-        { 
-          comments.map((comment, index) => (
-          <Comment 
-            key={index} 
-            followerPic={comment.picture}
-            followerName={comment.userName}
-            text={comment.comment}
-            userId={comment.userId}
-            />
-          ))
-        }
-        <BoxInput>
-          <img src= {latestPost.pic} />
-          <input name="comment"
-           onChange={(e) => setNewComment(e.target.value)}
-           type="text"
-           value={newComment}
-           placeholder="write a comment" ></input>
-          <ion-icon onClick = {sendComment}name="paper-plane-outline"></ion-icon>
-        </BoxInput>
-      </ContainerComments>
-      }
+                  <h3>{latestPost.text}</h3>
+                </ReactTagify>
+              )}
+              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
+                <LinkInfo>
+                  <h2>{latestPost.title}</h2>
+                  <h3>{latestPost.preview}</h3>
+                  <h4>{latestPost.link}</h4>
+                </LinkInfo>
+                <img src={latestPost.pic} />
+              </LinkDisplayer>
+            </PostContent>
+          </PostCard>
+          {enableComments &&
+            <ContainerComments>
+              {
+                comments.map((comment, index) => (
+                  <Comment
+                    key={index}
+                    followerPic={comment.picture}
+                    followerName={comment.userName}
+                    text={comment.comment}
+                  />
+                ))
+              }
+              <BoxInput>
+                <img src={latestPost.picture} />
+                <input name="comment"
+                  onChange={(e) => setNewComment(e.target.value)}
+                  type="text"
+                  placeholder="write a comment" ></input>
+                <ion-icon onClick={sendComment} name="paper-plane-outline"></ion-icon>
+              </BoxInput>
+            </ContainerComments>
+          }
+        </>)}
     </>
   );
 }
@@ -291,6 +350,8 @@ const PostCard = styled.div`
   margin-bottom:16px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
+  margin-bottom: 16px;
+  z-index:1;
   padding: 16px;
   display: flex;
   img {
@@ -309,7 +370,7 @@ const PostCard = styled.div`
    h3 {
     color:#ffffff;
     font-size: 11px;
-    margin-left 10px;
+    margin-left: 10px;
    }
 
    h4 {
@@ -430,7 +491,7 @@ const ContainerComments = styled.div`
   width: 611px;
   margin-bottom: 20px;
   padding: 16px;
-  background-color: #1E1E1E;;
+  background-color: #1E1E1E;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
   img {
@@ -472,3 +533,74 @@ display: flex;
 
   }
 `
+
+const RepostDisplay = styled.div`
+    width: 611px;
+    height:100%;
+    border-radius: 16px;
+    background-color:#333333;
+    display:flex;
+    flex-direction:column;
+    padding-top:14px;
+    z-index: 0;
+    margin-bottom: 15px;
+`
+const RepostByDiv = styled.div`
+    width:100%;
+    display:flex;
+    height: 6px;
+    flex-direction:row;
+    justify-content:flex-start;
+    align-items:center;
+    h4{
+        font-size:13px;
+        color:#ffffff;
+        font-family: "Lato", sans-serif;
+        margin-left:8px;
+    }
+    ion-icon{
+        font-size:18px;
+        color:#ffffff;
+        font-family: "Lato", sans-serif;
+        margin-left:8px;
+    }
+  `
+const RepostCard = styled.div`
+width: 611px;
+background-color: #000000;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+border-radius: 16px;
+margin-bottom: 16px;
+position:relative;
+top: 16px;
+z-index:1;
+padding: 16px;
+display: flex;
+img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+ion-icon {
+  font-size: 19px;
+  color: red;
+  margin-left: 17px;
+  margin-top: 20px;
+}
+`;
+
+const ShareCounter = styled.div`
+  color:#ffffff;
+    ion-icon{
+      font-size:22px;
+      color:#ffffff;
+      font-family: "Lato", sans-serif;
+    }
+    h5{
+      font-size:11px;
+        color:#ffffff;
+        font-family: "Lato", sans-serif;
+        margin-left:8px;
+    }
+  `
+
