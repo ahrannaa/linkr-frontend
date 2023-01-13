@@ -295,7 +295,7 @@ const PostCard = styled.div`
    h3 {
     color:#ffffff;
     font-size: 11px;
-    margin-left 10px;
+    margin-left: 10px;
    }
 
    h4 {
