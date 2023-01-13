@@ -5,24 +5,45 @@ import TopBar from "../components/TopBar.js";
 import Post from "../components/Post.js";
 import NewPost from "../components/NewPost.js";
 import Hashtags from "../components/Hashtags.js";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function TimelinePage(props) {
   const [latestPosts, setLatestPosts] = useState([]);
   const [infoHashtag, setInfoHashtag] = useState([]);
   const [dataPostReceived, setDataPostReceived] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const localhost1 = "http://localhost:4000/";
+  const db1 = "https://linkr-api-0l14.onrender.com/";
+  let offset = 0;
 
-  useEffect(() => {
+  function refreshPosts() {
     axios
-      .get("https://linkr-api-0l14.onrender.com/posts")
+      .get(`${db1}posts?limit=5&offset=${offset}`)
       .then((res) => {
-        setLatestPosts(res.data);
-        setDataPostReceived(false);
+        const newPosts = [];
+        res.data.forEach((e) => newPosts.push(e));
+        setLatestPosts((oldPosts) => [...oldPosts, ...newPosts]);
       })
       .catch((err) => {
         alert(
           "An error ocurred while trying to fetch the posts, please refresh the page"
         );
       });
+    offset += 5;
+  }
+
+  function handleScroll(e) {
+    if (
+      window.innerHeight + e.target.documentElement.scrollTop + 1 >=
+      e.target.documentElement.scrollHeight
+    ) {
+      refreshPosts();
+    }
+  }
+
+  useEffect(() => {
+    refreshPosts();
+    window.addEventListener("scroll", handleScroll);
   }, [dataPostReceived]);
 
   if (!latestPosts) {
