@@ -47,7 +47,7 @@ export default function TopBar() {
           name={displayButton ? "chevron-up-outline" : "chevron-down-outline"}
           onClick={() => setDisplayButton(!displayButton)}
         ></ion-icon>
-       {/*  <img src={user.picture} /> */}
+        <img src={user.picture} />
         <LogoutButton displayButton={displayButton} onClick={Logout}>
           <h2>Logout</h2>
         </LogoutButton>

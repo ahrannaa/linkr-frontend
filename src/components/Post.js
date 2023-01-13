@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../auth";
 import { ReactTagify } from "react-tagify";
+import Comment from "./Comment.js";
 
 export default function Post({ latestPost }) {
   let subtitle;
@@ -13,7 +14,12 @@ export default function Post({ latestPost }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [editInput, setEditInput] = useState(latestPost.text);
+  const [newComment, setNewComment] = useState("");
+  const [countComments, setcountComments] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [enableComments, setEnableComments] = useState(false);
   const [like, setLike] = useState(false);
+  const [countLike, setcountLike] = useState(0);
   const [heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,11 +30,42 @@ export default function Post({ latestPost }) {
     if (like) {
       setLike(false);
       heartClass = "heart-outline";
+      setcountLike(countLike - 1)
     } else {
       setLike(true);
       heartClass = "heart";
+      setcountLike(countLike + 1)
     }
     setheartIcon(heartClass);
+    setcountLike(countLike)
+  }
+
+  async function openComments() {
+    const URL = `http://localhost:4000/posts/${latestPost.id}/comments`
+
+    try {
+      const response = await axios.get(URL)
+      setComments(response.data)
+      setEnableComments(true);
+
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  async function sendComment(e) {
+    e.preventDefault()
+    const body = newComment
+
+    const URL = `http://localhost:4000/posts/posts/${latestPost.id}/comments`
+
+    try {
+      await axios.post(URL, body)
+      setcountComments(countComments + 1)
+
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   const customStyles = {
@@ -108,6 +145,7 @@ export default function Post({ latestPost }) {
       alert(`error: ${err}`);
     }
   }
+
   document.onkeydown = function (e) {
     if (e.key === "Escape") {
       e.preventDefault();
@@ -130,7 +168,7 @@ export default function Post({ latestPost }) {
   async function sharePost(id) {
     const body = null
     const config = { headers: { Authorization: `Bearer ${user.token}` } };
-    if(window.confirm("Do you want to re-post this link?") === true){
+    if (window.confirm("Do you want to re-post this link?") === true) {
 
       try {
         await axios.post(`http://localhost:4000/posts/${id}`, body, config);
@@ -146,14 +184,15 @@ export default function Post({ latestPost }) {
         <RepostDisplay>
           <RepostByDiv>
             <ion-icon name="repeat-sharp"></ion-icon>
-            <h4>Re-posted by {latestPost.name===latestPost.reposter? ("you"):(latestPost.reposter)}</h4>
+            <h4>Re-posted by {latestPost.name === latestPost.reposter ? ("you") : (latestPost.reposter)}</h4>
           </RepostByDiv>
           <RepostCard>
             <div>
               <img src={latestPost.picture} />
               <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+              <ion-icon name="chatbubbles-outline"></ion-icon>
               <ShareCounter>
-                <ion-icon name="repeat-sharp" onClick={()=>sharePost(latestPost.originalPostId)}></ion-icon>
+                <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.originalPostId)}></ion-icon>
                 <h5>{latestPost.repostCount} re-post</h5>
               </ShareCounter>
             </div>
@@ -183,81 +222,112 @@ export default function Post({ latestPost }) {
           </RepostCard>
         </RepostDisplay>
       ) : (
-        <PostCard>
-          <div>
-            <img src={latestPost.picture} />
-            <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
-            <ShareCounter>
-              <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.id)}></ion-icon>
-              <h5>{latestPost.repostCount} re-post</h5>
-            </ShareCounter>
-          </div>
-          <PostContent>
-            <Header>
-              <Link to={`/user/${latestPost.userId}`}>
-                <h2>{latestPost.name}</h2>
-              </Link>
-              {user.id === latestPost.userId && (
-                <IonIcon>
-                  <ion-icon
-                    onClick={handleEditButton}
-                    name="pencil-outline"
-                  ></ion-icon>
-                  <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
-                  <Modal
-                    isOpen={modalIsOpen}
-                    onAfterOpen={afterOpenModal}
-                    onRequestClose={closeModal}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                  >
-                    {isLoading ? (
-                      <ColorRing
-                        type="ThreeDots"
-                        color="#4fa94d"
-                        height={150}
-                        width={150}
-                        ariaLabel="blocks-loading"
-                      />
-                    ) : (
-                      <Box>
-                        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>
-                          Are you sure you want to delete this post?
-                        </h2>
-                        <Button onClick={closeModal}>No,go back</Button>
-                        <Button onClick={deletePost}>Yes,delete it</Button>
-                      </Box>
-                    )}
-                  </Modal>
-                </IonIcon>
+        <>
+          <PostCard>
+            <div>
+              <img src={latestPost.picture} />
+              <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+              {countLike > 0 &&
+                <h3>{countLike} likes</h3>
+              }
+              <ion-icon onClick={openComments} name="chatbubbles-outline"></ion-icon>
+              {countComments > 0 &&
+                <h4>{countComments} comments</h4>
+              }
+              <ShareCounter>
+                <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.id)}></ion-icon>
+                <h5>{latestPost.repostCount} re-post</h5>
+              </ShareCounter>
+            </div>
+            <PostContent>
+              <Header>
+                <Link to={`/user/${latestPost.userId}`}>
+                  <h2>{latestPost.name}</h2>
+                </Link>
+                {user.id === latestPost.userId && (
+                  <IonIcon>
+                    <ion-icon
+                      onClick={handleEditButton}
+                      name="pencil-outline"
+                    ></ion-icon>
+                    <ion-icon onClick={openModal} name="trash-outline"></ion-icon>
+                    <Modal
+                      isOpen={modalIsOpen}
+                      onAfterOpen={afterOpenModal}
+                      onRequestClose={closeModal}
+                      style={customStyles}
+                      contentLabel="Example Modal"
+                    >
+                      {isLoading ? (
+                        <ColorRing
+                          type="ThreeDots"
+                          color="#4fa94d"
+                          height={150}
+                          width={150}
+                          ariaLabel="blocks-loading"
+                        />
+                      ) : (
+                        <Box>
+                          <h2 ref={(_subtitle) => (subtitle = _subtitle)}>
+                            Are you sure you want to delete this post?
+                          </h2>
+                          <Button onClick={closeModal}>No,go back</Button>
+                          <Button onClick={deletePost}>Yes,delete it</Button>
+                        </Box>
+                      )}
+                    </Modal>
+                  </IonIcon>
+                )}
+              </Header>
+              {isEditing ? (
+                <Input
+                  onChange={(e) => setEditInput(e.target.value)}
+                  autoFocus
+                  defaultValue={editInput}
+                />
+              ) : (
+                <ReactTagify
+                  tagStyle={tagDisplay}
+                  tagClicked={(t) => {
+                    navigate(`/hashtag/${t.replace("#", "")}`);
+                  }}
+                >
+                  <h3>{latestPost.text}</h3>
+                </ReactTagify>
               )}
-            </Header>
-            {isEditing ? (
-              <Input
-                onChange={(e) => setEditInput(e.target.value)}
-                autoFocus
-                defaultValue={editInput}
-              />
-            ) : (
-              <ReactTagify
-                tagStyle={tagDisplay}
-                tagClicked={(t) => {
-                  navigate(`/hashtag/${t.replace("#", "")}`);
-                }}
-              >
-                <h3>{latestPost.text}</h3>
-              </ReactTagify>
-            )}
-            <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
-              <LinkInfo>
-                <h2>{latestPost.title}</h2>
-                <h3>{latestPost.preview}</h3>
-                <h4>{latestPost.link}</h4>
-              </LinkInfo>
-              <img src={latestPost.pic} />
-            </LinkDisplayer>
-          </PostContent>
-        </PostCard>)}
+              <LinkDisplayer onClick={() => linkRedirection(latestPost.link)}>
+                <LinkInfo>
+                  <h2>{latestPost.title}</h2>
+                  <h3>{latestPost.preview}</h3>
+                  <h4>{latestPost.link}</h4>
+                </LinkInfo>
+                <img src={latestPost.pic} />
+              </LinkDisplayer>
+            </PostContent>
+          </PostCard>
+          {enableComments &&
+            <ContainerComments>
+              {
+                comments.map((comment, index) => (
+                  <Comment
+                    key={index}
+                    followerPic={comment.picture}
+                    followerName={comment.userName}
+                    text={comment.comment}
+                  />
+                ))
+              }
+              <BoxInput>
+                <img src={latestPost.picture} />
+                <input name="comment"
+                  onChange={(e) => setNewComment(e.target.value)}
+                  type="text"
+                  placeholder="write a comment" ></input>
+                <ion-icon onClick={sendComment} name="paper-plane-outline"></ion-icon>
+              </BoxInput>
+            </ContainerComments>
+          }
+        </>)}
     </>
   );
 }
@@ -265,6 +335,7 @@ export default function Post({ latestPost }) {
 const PostCard = styled.div`
   width: 611px;
   background-color: #000000;
+  margin-bottom:16px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 16px;
   margin-bottom: 16px;
@@ -279,9 +350,20 @@ const PostCard = styled.div`
 
   ion-icon {
     font-size: 19px;
-    color: red;
+    color: white;
     margin-left: 17px;
     margin-top: 20px;
+  }
+  
+   h3 {
+    color:#ffffff;
+    font-size: 11px;
+    margin-left: 10px;
+   }
+
+   h4 {
+   color:#ffffff;
+   font-size: 11px;
   }
 `;
 const PostContent = styled.div`
@@ -333,7 +415,7 @@ const LinkDisplayer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  overflow: hidden;
+  overflow: hidden; 
   img {
     width: 154px;
     height: 154px;
@@ -393,6 +475,52 @@ const Button = styled.button`
     background: #1877f2;
   }
 `;
+const ContainerComments = styled.div`
+  width: 611px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #1E1E1E;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  img {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+  }
+`;
+const BoxInput = styled.div`
+display: flex;
+ img {
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+};
+
+ ion-icon {
+    background-color:#252525;
+    font-size: 19px;
+    color: #ffffff;
+    margin-top:12px;
+}
+
+  input {
+   width: 510px;
+   height: 39px;
+   margin-left:20px;
+   background: #252525;
+   border-radius: 8px;
+   border:none;
+   color:#ffffff;
+   
+   ::placeholder {
+    font-family: 'Lato';
+    font-size: 14px;
+    color: #575757;
+    margin-left: 25px;
+   };
+
+  }
+`
 
 const RepostDisplay = styled.div`
     width: 611px;
@@ -463,3 +591,4 @@ const ShareCounter = styled.div`
         margin-left:8px;
     }
   `
+
