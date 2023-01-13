@@ -10,7 +10,7 @@ export default function Comment(props) {
       <Header>
       <img src= {props.followerPic}/>
       <h2>{props.followerName}</h2>
-      {user.id == props.userId && (
+      {user.id === props.userId && (
         <h3> • post’s author</h3>
       )}
       </Header>
@@ -46,7 +46,7 @@ const Comments = styled.div`
    display:flex;
    flex-wrap: wrap;
    h3{
-    color:red;
+    color:#ffffff;
     margin-left:60px;
     font-family: 'Lato';
     font-weight: 400;
