@@ -13,7 +13,7 @@ export default function TimelinePage(props) {
 
   useEffect(() => {
     axios
-      .get("https://linkr-api-0l14.onrender.com/posts")
+      .get("http://localhost:4000/posts")
       .then((res) => {
         setLatestPosts(res.data);
         setDataPostReceived(false);
@@ -48,10 +48,7 @@ export default function TimelinePage(props) {
               <h1>There are no posts yet</h1>
             ) : (
               <>
-                {" "}
-                {latestPosts.map((latestPost, index) => (
-                  <Post key={index} latestPost={latestPost} />
-                ))}
+                {latestPosts.map((latestPost, index) =>  <Post key={index} latestPost={latestPost} />)}
               </>
             )}
           </>
@@ -61,6 +58,8 @@ export default function TimelinePage(props) {
     </>
   );
 }
+
+
 
 const TimelineBackground = styled.body`
   background-color: #171717;

@@ -12,7 +12,7 @@ export default function SignInPage() {
   function sendUser(e) {
     e.preventDefault();
     axios
-      .post("https://linkr-api-0l14.onrender.com/signin", format)
+      .post("http://localhost:4000/signin", format)
       .then((res) => {
         console.log(res.data);
         setUser(res.data);

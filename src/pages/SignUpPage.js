@@ -15,7 +15,7 @@ export default function SignUpPage() {
   function sendUser(e) {
     e.preventDefault();
     axios
-      .post("https://linkr-api-0l14.onrender.com/signup", format)
+      .post("http://localhost:4000/signup", format)
       .then((res) => {
         navigate("/");
       })
