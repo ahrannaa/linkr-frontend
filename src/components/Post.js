@@ -48,12 +48,10 @@ export default function Post({ latestPost }) {
     setcountLike(countLike)
   }
 
-async function getComments() {
-  const URL = `https://linkr-api-0l14.onrender.com/${latestPost.id}/comments`
+async function getComments(postId) {
+  const URL = `https://linkr-api-0l14.onrender.com/posts/${postId}/comments`
   try {
      const response = await axios.get(URL)
-     console.log("dataa")
-     console.log("dataa")
      setComments(response.data)
    } catch(err) {
      alert(err.message);
@@ -77,7 +75,8 @@ async function getComments() {
   };
   try {
      await axios.post(URL, body, config)
-     setComments((oldComments) => [...oldComments, newComment])
+     await getComments(latestPost.id)
+     setNewComment("");
     } catch(err) {
     alert(err.message);
   }
@@ -246,6 +245,7 @@ async function getComments() {
                 <h3>{countLike} likes</h3>
               }
               <ion-icon onClick={openComments} name="chatbubbles-outline"></ion-icon>
+              <h4>{comments.length} comments</h4>
               <ShareCounter>
                 <ion-icon name="repeat-sharp" onClick={() => sharePost(latestPost.id)}></ion-icon>
                 <h5>{latestPost.repostCount} re-post</h5>
