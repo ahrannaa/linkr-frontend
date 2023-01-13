@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Modal from "react-modal";
 import { ColorRing } from "react-loader-spinner";
 import styled from "styled-components";
@@ -15,7 +15,6 @@ export default function Post({ latestPost }) {
   const [isEditing, setEditing] = useState(false);
   const [editInput, setEditInput] = useState(latestPost.text);
   const [newComment, setNewComment] = useState("");
-  const [countComments, setcountComments] = useState(0);
   const [comments, setComments] = useState([]);
   const [enableComments, setEnableComments] = useState(false);
   const [like, setLike] = useState(false);
@@ -23,6 +22,15 @@ export default function Post({ latestPost }) {
   const [heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("teste")
+    console.log(latestPost.id)
+    const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+    axios.get(URL)
+      .then((response) => setComments(response.data))
+      .catch((err) => alert(err.message))
+  }, [latestPost.id]);
 
   function fillHeart() {
     let heartClass = heartIcon;
@@ -40,29 +48,36 @@ export default function Post({ latestPost }) {
     setcountLike(countLike)
 }
 
- async function openComments() {
+async function getComments() {
   const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
-  
-   try {
+  try {
      const response = await axios.get(URL)
+     console.log("dataa")
+     console.log("dataa")
      setComments(response.data)
-     setEnableComments(true);
-
    } catch(err) {
      alert(err.message);
    }
 }
 
+ async function openComments() {
+  setEnableComments(true);
+}
+
  async function sendComment(e){
   e.preventDefault()
-  const body = newComment
+  const body = { comment: newComment }
 
   const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    },
+  };
   try {
-     await axios.post(URL, body)
-     setcountComments(countComments + 1)
-  
+     await axios.post(URL, body, config)
+     setComments((oldComments) => [...oldComments, newComment])
     } catch(err) {
     alert(err.message);
   }
@@ -175,9 +190,7 @@ function closeModal() {
            <h3>{countLike} likes</h3>
           }
           <ion-icon onClick ={openComments} name="chatbubbles-outline"></ion-icon>
-          {countComments > 0 && 
-           <h4>{countComments} comments</h4>
-          }
+           <h4>{comments.length} comments</h4>
         </div>
         <PostContent>
           <Header>
@@ -254,11 +267,12 @@ function closeModal() {
             followerPic={comment.picture}
             followerName={comment.userName}
             text={comment.comment}
+            userId={comment.userId}
             />
           ))
         }
         <BoxInput>
-          <img src= {latestPost.picture} />
+          <img src= {latestPost.pic} />
           <input name="comment"
            onChange={(e) => setNewComment(e.target.value)}
            type="text"
