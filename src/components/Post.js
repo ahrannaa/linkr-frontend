@@ -48,12 +48,10 @@ export default function Post({ latestPost }) {
     setcountLike(countLike)
 }
 
-async function getComments() {
-  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+async function getComments(postId) {
+  const URL = `https://linkr-api-0l14.onrender.com/posts/${postId}/comments`
   try {
      const response = await axios.get(URL)
-     console.log("dataa")
-     console.log("dataa")
      setComments(response.data)
    } catch(err) {
      alert(err.message);
@@ -77,7 +75,8 @@ async function getComments() {
   };
   try {
      await axios.post(URL, body, config)
-     setComments((oldComments) => [...oldComments, newComment])
+     await getComments(latestPost.id)
+     setNewComment("");
     } catch(err) {
     alert(err.message);
   }
@@ -276,6 +275,7 @@ function closeModal() {
           <input name="comment"
            onChange={(e) => setNewComment(e.target.value)}
            type="text"
+           value={newComment}
            placeholder="write a comment" ></input>
           <ion-icon onClick = {sendComment}name="paper-plane-outline"></ion-icon>
         </BoxInput>
