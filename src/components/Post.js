@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../auth";
 import { ReactTagify } from "react-tagify";
-import Comments from "./Comments";
+import Comment from "./Comment.js";
 
 export default function Post({ latestPost }) {
   let subtitle;
@@ -14,9 +14,12 @@ export default function Post({ latestPost }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [editInput, setEditInput] = useState(latestPost.text);
+  const [newComment, setNewComment] = useState("");
+  const [countComments, setcountComments] = useState(0);
   const [comments, setComments] = useState([]);
   const [enableComments, setEnableComments] = useState(false);
   const [like, setLike] = useState(false);
+  const [countLike, setcountLike] = useState(0);
   const [heartIcon, setheartIcon] = useState("heart-outline");
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -27,24 +30,45 @@ export default function Post({ latestPost }) {
     if (like) {
       setLike(false);
       heartClass = "heart-outline";
+      setcountLike(countLike - 1)
     } else {
       setLike(true);
       heartClass = "heart";
+      setcountLike(countLike + 1)
     }
     setheartIcon(heartClass);
-}
-function openComments() {
-  axios
-  .get(`https://linkr-api-0l14.onrender.com/comments${latestPost.id}`)
-  .then((res) => {
-    setComments(res.data)
-    setEnableComments(true);
-  }).catch((err) => {
-    alert(err.message);
-  });
+    setcountLike(countLike)
 }
 
-  const customStyles = {
+ async function openComments() {
+  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+  
+   try {
+     const response = await axios.get(URL)
+     setComments(response.data)
+     setEnableComments(true);
+
+   } catch(err) {
+     alert(err.message);
+   }
+}
+
+ async function sendComment(e){
+  e.preventDefault()
+  const body = newComment
+
+  const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}/comments`
+
+  try {
+     await axios.post(URL, body)
+     setcountComments(countComments + 1)
+  
+    } catch(err) {
+    alert(err.message);
+  }
+}
+
+ const customStyles = {
     content: {
       width: "597px",
       height: "262px",
@@ -59,7 +83,7 @@ function openComments() {
     },
   };
 
-  async function deletePost() {
+async function deletePost() {
     setIsLoading(true);
 
     const URL = `https://linkr-api-0l14.onrender.com/posts/${latestPost.id}`;
@@ -87,11 +111,11 @@ function openComments() {
     }, 3000);
   }
 
-  function openModal() {
+function openModal() {
     setIsOpen(true);
   }
 
-  function closeModal() {
+function closeModal() {
     setIsOpen(false);
   }
 
@@ -121,6 +145,7 @@ function openComments() {
       alert(`error: ${err}`);
     }
   }
+
   document.onkeydown = function (e) {
     if (e.key === "Escape") {
       e.preventDefault();
@@ -146,7 +171,13 @@ function openComments() {
         <div>
           <img src={latestPost.picture} />
           <ion-icon onClick={fillHeart} name={heartIcon}></ion-icon>
+          {countLike > 0 && 
+           <h3>{countLike} likes</h3>
+          }
           <ion-icon onClick ={openComments} name="chatbubbles-outline"></ion-icon>
+          {countComments > 0 && 
+           <h4>{countComments} comments</h4>
+          }
         </div>
         <PostContent>
           <Header>
@@ -215,8 +246,26 @@ function openComments() {
         </PostContent>
       </PostCard>
       { enableComments &&
-        comments.map((comment, index) => (
-         <Comments key={index} comment={comment}/>))
+       <ContainerComments>
+        { 
+          comments.map((comment, index) => (
+          <Comment 
+            key={index} 
+            followerPic={comment.picture}
+            followerName={comment.userName}
+            text={comment.comment}
+            />
+          ))
+        }
+        <BoxInput>
+          <img src= {latestPost.picture} />
+          <input name="comment"
+           onChange={(e) => setNewComment(e.target.value)}
+           type="text"
+           placeholder="write a comment" ></input>
+          <ion-icon onClick = {sendComment}name="paper-plane-outline"></ion-icon>
+        </BoxInput>
+      </ContainerComments>
       }
     </>
   );
@@ -241,6 +290,17 @@ const PostCard = styled.div`
     color: white;
     margin-left: 17px;
     margin-top: 20px;
+  }
+  
+   h3 {
+    color:#ffffff;
+    font-size: 11px;
+    margin-left 10px;
+   }
+
+   h4 {
+   color:#ffffff;
+   font-size: 11px;
   }
 `;
 const PostContent = styled.div`
@@ -352,3 +412,49 @@ const Button = styled.button`
     background: #1877f2;
   }
 `;
+const ContainerComments = styled.div`
+  width: 611px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #1E1E1E;;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  img {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+  }
+`;
+const BoxInput = styled.div`
+display: flex;
+ img {
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+};
+
+ ion-icon {
+    background-color:#252525;
+    font-size: 19px;
+    color: #ffffff;
+    margin-top:12px;
+}
+
+  input {
+   width: 510px;
+   height: 39px;
+   margin-left:20px;
+   background: #252525;
+   border-radius: 8px;
+   border:none;
+   color:#ffffff;
+   
+   ::placeholder {
+    font-family: 'Lato';
+    font-size: 14px;
+    color: #575757;
+    margin-left: 25px;
+   };
+
+  }
+`
