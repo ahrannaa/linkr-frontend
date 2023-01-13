@@ -1,12 +1,18 @@
 import styled from "styled-components";
+import AuthContext from "../auth";
+import { useContext } from "react";
 
 export default function Comment(props) {
+  const { user } = useContext(AuthContext);
+
     return (
    <BoxComments>
       <Header>
       <img src= {props.followerPic}/>
       <h2>{props.followerName}</h2>
-      <h3>• following</h3>
+      {user.id == props.userId && (
+        <h3> • post’s author</h3>
+      )}
       </Header>
       <Comments><h3>{props.text}</h3></Comments>
      </BoxComments>
